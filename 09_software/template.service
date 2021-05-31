@@ -1,0 +1,20 @@
+[Unit]
+Description=Flora Plant Irrigation System Client/Daemon
+Documentation=tbd
+After=network.target mosquitto.service
+
+[Service]
+Type=notify
+User=daemon
+Group=daemon
+WorkingDirectory=/opt/flora/
+ExecStart=/usr/bin/python3 /opt/flora/flora.py
+#StandardOutput=null
+StandardOutput=syslog
+SyslogIdentifier=flora
+StandardError=journal
+Environment=PYTHONUNBUFFERED=true
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
