@@ -1,5 +1,5 @@
 # Flora1
-** Raspberry Pi Irrigation System **
+**Raspberry Pi Irrigation System**
 
 Features
 * Plant status monitorig via [Xiaomi Mi Flora Plant Sensor MQTT Client/Daemon](https://github.com/ThomDietrich/miflora-mqtt-daemon)
