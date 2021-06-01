@@ -1,6 +1,5 @@
-Bopla Serie Euromas II, 160 x 120 x 92 mm, IP65
-  BOPLA EM 238 F
- 	
+**Flora Case and Connectors**
+
     | Pos. | Part Name                                    | Description                        | Comments                         |
     |------|----------------------------------------------|------------------------------------|----------------------------------|
     |    1 | BOPLA EM 238 F                               | Case                               | lots of space for add-ons...     |
