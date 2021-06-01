@@ -12,7 +12,7 @@ Due to the initial plan using a *Raspberry Pi Model B*, a 26-pin header was used
 
 High Side Driver Infineon BTS621L1
 -----------------------------------
-The driver works fine, but the device package seems to be outdated (and is not very practical for breadboard designs).
+The driver works fine, but the device package seems to be outdated (and is not very practical for breadboard designs). For a redesign, I used the [Infineon BTS117](https://www.infineon.com/cms/en/product/power/smart-low-side-high-side-switches/low-side-switches/classic-hitfet-24v/bts117/) *"N channel vertical power FET in Smart SIPMOS® technology"*. The latter is a single channel low-side switch and provides less diagnostic functions, but is available in a handy TO220-3 package. 
 
 Breadboard vs. printed circuit board
 -------------------------------------
