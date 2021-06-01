@@ -1,6 +1,9 @@
 # Flora1
 **Raspberry Pi Irrigation System**
 
+![flora-1_188x300](https://user-images.githubusercontent.com/83612361/120393655-9590ad80-c332-11eb-8bba-2d2cbcf6389f.jpg)
+
+
 **Features**
 * Plant status monitorig via [Xiaomi Mi Flora Plant Sensor MQTT Client/Daemon](https://github.com/ThomDietrich/miflora-mqtt-daemon)
 * Tank low / tank empty status monitoring with XKC-Y25-T12V (Non-Contact Liquid Level Sensor)
