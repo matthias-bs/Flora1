@@ -1,6 +1,6 @@
 **Flora Case and Connectors**
 
-    | Pos. | Part Name                                    | Description                        | Comments                         |
+    | Pos. | Part                                         | Description                        | Comments                         |
     |------|----------------------------------------------|------------------------------------|----------------------------------|
     |    1 | BOPLA EM 238 F                               | Case                               | lots of space for add-ons...     |
     |      | (Series Euromas II, 160 x 120 x 92 mm, IP65) |                                    |                                  |
@@ -14,10 +14,12 @@
     | ---- | -------------------------------------------- | ---------------------------------- | -------------------------------- |
     |    5 | 2x Barrel Jack 2.1mm x 5.5mm with Pigtail    | for Power Supply + Pump            | preferably with sleeve           |
     | ---- | -------------------------------------------- | ---------------------------------- | -------------------------------- |
-    |    6 | 2x Lumberg Quicklock 0270-04 /               | Quicklock chassis sockets, IP67,   |                                  |
+    |    6 | 2x Pöppelmann Kapsto GPN 305 GV 12           | Sealing Plugs for Barrel Jacks     | optional                         |
+    | ---- | -------------------------------------------- | ---------------------------------- | -------------------------------- |
+    |    7 | 2x Lumberg Quicklock 0270-04 /               | Quicklock chassis sockets, IP67,   |                                  |
     |      | Lutronic Quicklock 2320 04 T12CB100          | Size 12 - for Fill Level Inputs    |                                  |
     | ---- | -------------------------------------------- | ---------------------------------- | -------------------------------- |
-    |    7 | 2x Lumberg Quicklock 0250-04 /               | Quicklock plug with locking latch, |                                  |
+    |    8 | 2x Lumberg Quicklock 0250-04 /               | Quicklock plug with locking latch, |                                  |
     |      | Lutronic 2350 04 T06CB T                     | IP67, Size 12 - for Level Sensors  |                                  |
     |------|----------------------------------------------|------------------------------------|----------------------------------|
 
