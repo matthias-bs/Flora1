@@ -20,3 +20,7 @@
     |    7 | 2x Lumberg Quicklock 0250-04 /               | Quicklock plug with locking latch, |                                  |
     |      | Lutronic 2350 04 T06CB T                     | IP67, Size 12 - for Level Sensors  |                                  |
     |------|----------------------------------------------|------------------------------------|----------------------------------|
+
+
+![flora-1_378x600](https://user-images.githubusercontent.com/83612361/120393350-11d6c100-c332-11eb-886f-05e0dc835345.jpg)      ![flora-2_378x600](https://user-images.githubusercontent.com/83612361/120393360-1602de80-c332-11eb-8fc3-170775b36138.jpg)
+
