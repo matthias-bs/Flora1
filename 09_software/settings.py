@@ -19,6 +19,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20210602 Added PROJECT_BUILD
 #
 # ToDo:
 # - 
@@ -35,7 +36,8 @@ VERBOSITY           = 1
 
 PROJECT_NAME        = 'flora'
 PROJECT_VERSION     = 'V2.0'
-PROJECT_URL         = '<tbd>'
+PROJECT_BUILD       = '20210602'
+PROJECT_URL         = 'https://github.com/matthias-bs/Flora1'
 
 GPIO_TANK_SENS_LOW  = 23
 GPIO_TANK_SENS_EMPTY = 24
