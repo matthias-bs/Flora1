@@ -1,4 +1,4 @@
-# Flora1
+# flora1
 **Raspberry Pi Irrigation System**
 
 ![flora-1_188x300](https://user-images.githubusercontent.com/83612361/120393655-9590ad80-c332-11eb-8bba-2d2cbcf6389f.jpg)
@@ -21,6 +21,10 @@
 **Flora Status Report (Example)**
 
 ![flora_email](https://user-images.githubusercontent.com/83612361/120225128-f5108f80-c244-11eb-9133-0f7b753c0b68.png)
+
+**Why is it called _flora1_?**
+
+Because _flora2_ is already in the works!
 
 ----
 
