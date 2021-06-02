@@ -70,6 +70,35 @@ In this example, the Raspberry gets the private IP Address `192.168.0.10` and th
 ----
 **6. flora1 Installation and Configuration**
 
+Install Python 3 (should already been done in step 3):
+```
+$ sudo apt install git python3 python3-pip
+```
+
+Copy all source files from https://github.com/matthias-bs/Flora1/tree/main/09_software to `/opt/flora`.
+```
+$ cd /opt/flora
+$ sudo cp config.ini.dist config.ini
+```
+Edit `config.ini` as required. (e.g. ```sudo nano config.ini```) 
+
 Flora1 needs access to GPIO ports to monitor the tank level and and to control the pump.
 
 ```$ sudo adduser daemon gpio```
+
+Test your setup / ```config.ini```:
+
+```python3 flora.py```
+
+If everything works as desired: Congratulations!
+
+Now set up flora to run in daemon mode:
+```
+$ sudo cp /opt/flora/template.service /etc/systemd/system/flora.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl start flora.service
+$ sudo systemctl status flora.service
+$ sudo systemctl enable flora.service
+```
+
+If needed, check status/error messages in ```/var/log/syslog```.
