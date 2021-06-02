@@ -25,6 +25,7 @@
 #     <base_topic>/man_irr_duration_stat    (<seconds>
 #     <base_topic>/auto_report_stat         (0|1)
 #     <base_topic>/auto_irr_stat            (0|1)
+#     <base_topic>/tank                     (0|1|2)
 #
 # $ via LWT
 #
@@ -61,6 +62,7 @@
 #          Replaced set-/get-methods by properties
 # 20210118 Renamed MQTT topics
 # 20210602 Added MQTT status message and last will
+#          Added MQTT tank message
 #
 # ToDo:
 # - compare light value against daily average
@@ -560,6 +562,7 @@ if __name__ == '__main__':
         mqtt_client.publish(settings.base_topic_flora + '/auto_irr_stat', payload=str(settings.auto_irrigation), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_duration_stat', payload=str(settings.irr_duration_man), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0))
+        mqtt_client.publish(settings.base_topic_flora + '/tank', str(tank.status), qos = 1, retain=True)
 
         if (VERBOSITY > 1):
             for sensor in sensors:
