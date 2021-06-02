@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 ###############################################################################
 # flora.py
@@ -19,12 +20,15 @@
 #     <base_topic>/auto_irr_ctrl            (0|1)
 #
 # MQTT publications:
+#     <base_topic>/status                   (online|offline|idle|dead$)
 #     <base_topic>/man_irr_stat             (0|1)
 #     <base_topic>/man_irr_duration_stat    (<seconds>
 #     <base_topic>/auto_report_stat         (0|1)
 #     <base_topic>/auto_irr_stat            (0|1)
 #
-# created: 02/2020 updated: 02/2021
+# $ via LWT
+#
+# created: 02/2020 updated: 06/2021
 #
 # This program is Copyright (C) 02/2020 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -56,6 +60,7 @@
 # 20210117 Split source file into multiple modules
 #          Replaced set-/get-methods by properties
 # 20210118 Renamed MQTT topics
+# 20210602 Added MQTT status message and last will
 #
 # ToDo:
 # - compare light value against daily average
@@ -131,7 +136,10 @@ def mqtt_init(config):
             certfile=config['MQTT'].get('tls_certfile', None),
             tls_version=ssl.PROTOCOL_SSLv23
         )
-
+    
+    # Set 'Last Will and Testament"
+    mqtt_client.will_set(settings.base_topic_flora + '/status', 'dead', qos=1, retain=True)
+    
     if config['MQTT'].get('username'):
         mqtt_client.username_pw_set(config['MQTT'].get('username'),
                                     config['MQTT'].get('password', None))
@@ -368,6 +376,7 @@ if __name__ == '__main__':
     print(Fore.GREEN + Style.BRIGHT)
     print(PROJECT_NAME)
     print(PROJECT_VERSION)
+    print(PROJECT_BUILD)
     print('Source:', PROJECT_URL)
     print(Style.RESET_ALL)
 
@@ -464,6 +473,9 @@ if __name__ == '__main__':
     # Notify syslogd that we are up and running
     sd_notifier.notify('READY=1')
 
+    mqtt_client.publish(settings.base_topic_flora + '/status', "online",
+                        qos=1, retain=True)
+    
     # Wait until MQTT data is valid (this may take a while...)
     print_line('Waiting for MQTT sensor data -->',
                console=True, sd_notify=True)
@@ -543,9 +555,10 @@ if __name__ == '__main__':
                 Email(config).send(Report(settings, sensors, tank, pump).get_content())
 
         # Publish status flags/values
-        mqtt_client.publish(settings.base_topic_flora + '/auto_report_stat', str(settings.auto_report), qos=2, retain=True)
-        mqtt_client.publish(settings.base_topic_flora + '/auto_irr_stat', payload=str(settings.auto_irrigation), qos=2, retain=True)
-        mqtt_client.publish(settings.base_topic_flora + '/man_irr_duration_stat', payload=str(settings.irr_duration_man), qos=2, retain=True)
+        mqtt_client.publish(settings.base_topic_flora + '/status', "online", qos=1, retain=True)
+        mqtt_client.publish(settings.base_topic_flora + '/auto_report_stat', str(settings.auto_report), qos=1, retain=True)
+        mqtt_client.publish(settings.base_topic_flora + '/auto_irr_stat', payload=str(settings.auto_irrigation), qos=1, retain=True)
+        mqtt_client.publish(settings.base_topic_flora + '/man_irr_duration_stat', payload=str(settings.irr_duration_man), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0))
 
         if (VERBOSITY > 1):
@@ -602,6 +615,8 @@ if __name__ == '__main__':
             if (VERBOSITY > 1):
                 print_line('Sleeping ({} seconds) ...'.format(period),
                         console=True, sd_notify=False)
+            mqtt_client.publish(settings.base_topic_flora + '/status', "idle",
+                                qos=1, retain=True)
 
             # Sleep for <period> seconds
             for step in range(period):
@@ -612,5 +627,7 @@ if __name__ == '__main__':
                 sleep(1)
         else:
             print_line('Execution finished in non-daemon-mode', sd_notify=True)
+            mqtt_client.publish(settings.base_topic_flora + '/status', "offline",
+                                qos=1, retain=True)
             mqtt_client.disconnect()
             break
