@@ -1,4 +1,4 @@
-# Flora1 Software Installation
+# flora1 Software Installation
 
 ----
 **Overview**
