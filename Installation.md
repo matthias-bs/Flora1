@@ -47,3 +47,29 @@ The [MQTT-Explorer](https://github.com/thomasnordquist/MQTT-Explorer) is very us
 Please refer to https://github.com/ThomDietrich/miflora-mqtt-daemon.
 
 For compatibility with Flora1, set `reporting_method = mqtt-json` in the **miflora-mqtt-daemon** `config.ini`.
+
+----
+**4. Optional: Configure Raspberry Pi with static IP address**
+
+Example `/etc/dhcpcd.conf`:
+```
+[...]
+interface wlan0
+static ip_address=192.168.0.10/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1
+```
+In this example, the Raspberry gets the private IP Address `192.168.0.10` and the router/DNS has the private IP address ```192.168.0.1```.
+
+----
+**5. Optional: Set up port forwarding in your router to access your MQTT broker from the Internet**
+
+***Please refer to your router's documentation and make sure to maintain security!***
+***It is highly recommended to allow only Secure MQTT (MQTT over TLS, port 8883) forwarding.***
+
+----
+**6. flora1 Installation and Configuration**
+
+Flora1 needs access to GPIO ports to monitor the tank level and and to control the pump.
+
+```$ sudo adduser daemon gpio```
