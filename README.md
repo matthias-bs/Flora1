@@ -21,3 +21,14 @@
 **Flora Status Report (Example)**
 
 ![flora_email](https://user-images.githubusercontent.com/83612361/120225128-f5108f80-c244-11eb-9133-0f7b753c0b68.png)
+
+----
+
+## Disclaimer and Legal
+
+> *Xiaomi* and *Mi Flora* are registered trademarks of *BEIJING XIAOMI TECHNOLOGY CO., LTD.*
+>
+> This project is a community project not for commercial use.
+> The authors will not be held responsible in the event of device failure or withered plants.
+>
+> This project is in no way affiliated with, authorized, maintained, sponsored or endorsed by *Xiaomi* or any of its affiliates or subsidiaries.
