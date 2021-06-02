@@ -41,3 +41,9 @@ How to set up security mechanisms:
 
 The [MQTT-Explorer](https://github.com/thomasnordquist/MQTT-Explorer) is very useful for testing.
 
+----
+**3. miflora-mqtt-daemon Installation**
+
+Please refer to https://github.com/ThomDietrich/miflora-mqtt-daemon.
+
+For compatibility with Flora1, set `reporting_method = mqtt-json` in the **miflora-mqtt-daemon** `config.ini`.
