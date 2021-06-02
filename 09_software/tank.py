@@ -6,7 +6,7 @@
 # - provides the tank fill level status values <low> and <empty>
 #   by reading the according sensor outputs via GPIO pins
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021 updated: 06/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -16,6 +16,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20210602 Added property <status>
 #
 # ToDo:
 # - 
@@ -72,6 +73,21 @@ class Tank:
             bool: True if tank is low, false otherwise.
         """
         return (GPIO.input(self.p_low) == True)
+
+    @property
+    def status(self):
+        """
+        Get current status of tank level.
+
+        Returns:
+            int: 0 - empty, 1 - low, 2 - o.k.
+        """
+        if self.empty:
+            return 0
+        elif self.low:
+            return 1
+        else:
+            return 2
     
     def __str__(self):
         if (self.name != ""):
