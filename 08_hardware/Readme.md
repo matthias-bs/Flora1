@@ -1,5 +1,4 @@
-README
-=======
+# flora1 Hardware
 
 Selecting a Raspberry Pi version
 ---------------------------------
