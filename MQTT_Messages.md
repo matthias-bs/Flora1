@@ -2,7 +2,7 @@
 
 ```
 MQTT subscriptions:
-     <base_topic_sensors>/<sensors>{}      (JSON encoded data)
+     <base_topic_sensors>/<sensors>{}      (JSON encoded data from Miflora MQTT Daemon)
      <base_topic>/man_report_cmd           (-)
      <base_topic>/man_irr_cmd              (1|2)                         1: pump #1 / 2: pump #2
      <base_topic>/man_irr_duration_ctrl    (<seconds>)
