@@ -16,7 +16,9 @@ auto_report = 1
 auto_irrigation = 0
 
 # Irrigation duration in seconds for automatic mode (Default: 120)
-#irrigation_duration_auto = 120
+# Pump 1 / 2
+#irrigation_duration_auto1 = 120
+#irrigation_duration_auto2 = 120
 
 # Irrigation duration in seconds for manual mode (Default: 60)
 #irrigation_duration_man = 60
@@ -188,6 +190,7 @@ alerts_repeat_time = 48
 [Sensor1]
 #[hydrangea]
 name      = Hydrangea
+pump      = 1
 temp_min  = 8.0
 temp_max  = 32.0
 cond_min  = 350
@@ -203,6 +206,7 @@ light_max = 60000
 
 [Sensor2]
 name      = Tomato
+pump      = 1
 temp_min  = 8.0
 temp_max  = 32.0
 cond_min  = 350
@@ -218,6 +222,7 @@ light_max = 60000
 
 [Sensor3]
 name      = Strawberry
+pump      = 1
 temp_min  = 8.0
 temp_max  = 32.0
 cond_min  = 350
