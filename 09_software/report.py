@@ -5,7 +5,7 @@
 # 
 # - generates HTML report with various sensor/plant and system data
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021 updated: 06/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -15,6 +15,7 @@
 # History:
 #
 # 20210118 Extracted from flora.py
+# 20210608 Added support of 2nd pump
 #
 # ToDo:
 # - 
@@ -35,7 +36,7 @@ class Report:
     Accesses the following object instances:
     - <settings>
     - <sensors>
-    - <pump>
+    - <pumps>
     - <tank>
     - <alert>
     
@@ -43,7 +44,7 @@ class Report:
         sensors (Sensor{}):     dictionary of Sensor class
         rep (string):           report contents
     """
-    def __init__(self, settings, sensors, tank, pump):
+    def __init__(self, settings, sensors, tank, pumps):
         """
         The constructor for Report class.
         
@@ -53,7 +54,7 @@ class Report:
         self.settings = settings
         self.sensors = sensors
         self.tank = tank
-        self.pump = pump
+        self.pumps = pumps
         
         # Find minimum light_irr value of all sensors
         self.min_light_irr = 1000000
@@ -64,6 +65,7 @@ class Report:
         self.header()
         self.sensor_status()
         self.system_status()
+        self.system_settings()
         self.footer()
         self.rep = unidecode(self.rep)
         
@@ -166,68 +168,67 @@ class Report:
         """
         Add system status (HTML table) to report.
         
-        Needs access to the object instances <settings>, <pump>, <tank>, <alert>
-        
         The content is appended to the attribute <rep>.
         """
         self.rep += '<h2>Systemstatus</h2>\n'
         self.rep += '<table border="1">\n'
-        self.rep += '<tr><td>Automatische Benachrichtigung<td align="right">{:}</tr>\n'\
-            .format("Ein" if(self.settings.auto_report) else "Aus")
-        self.rep += '<tr><td>Automatische Bew&auml;sserung<td align="right">{:}</tr>\n'\
-            .format("Ein" if (self.settings.auto_irrigation) else "Aus")
-        self.rep += '<tr><td>Bew&auml;sserungsdauer (autom.) [s]<td align="right">{:d}</tr>\n'\
-            .format(self.settings.irr_duration_auto)
-        self.rep += '<tr><td>Bew&auml;sserungsdauer (manuell) [s]<td align="right">{:d}</tr>\n'\
-            .format(self.settings.irr_duration_man)
-        self.rep += '<tr><td>Pause nach Bew&auml;sserung [s]<td align="right">{:d}</tr>\n'\
-            .format(self.settings.irr_rest)        
-        self.rep += '<tr><td>max. Beleuchtungsst&auml;rke [lx]<td align="right">{:d}</tr>\n'\
-            .format(self.min_light_irr)
-        last_irrigation = "-" if (self.pump.timestamp == 0) \
-                              else datetime.fromtimestamp(self.pump.timestamp).strftime("%x %X")
-        self.rep += '<tr><td>letzte automatische Bew&auml;sserung<td align="right">{:s}</tr>\n'\
-            .format(last_irrigation)
 
-        if (self.pump.timestamp != 0):
-            next_irrigation = datetime.fromtimestamp(pump.timestamp + self.settings.irr_rest).strftime("%x %X")
-        else:
-            next_irrigation = "-"
-        self.rep += '<tr><td>n&auml;chste Bew&auml;sserung fr&uuml;hestens<td align="right">{:s}</tr>\n'\
-            .format(next_irrigation)
+        last_irrigation = ['-', '-']
+        next_irrigation = ['-', '-']
+        for i in range(2):
+            if (self.pumps[i].timestamp != 0):
+                last_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp).strftime("%x %X")
+                next_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp + self.settings.irr_rest).strftime("%x %X")
+        self.rep += '<tr><td>letzte automatische Bew&auml;sserung<td>{:s}<td>{:s}</tr>\n'\
+                    .format(last_irrigation[0], last_irrigation[1])
+        self.rep += '<tr><td>n&auml;chste Bew&auml;sserung fr&uuml;hestens<td>{:s}<td>{:s}</tr>\n'\
+                    .format(next_irrigation[0], next_irrigation[1])
 
-        self.rep += '<tr><td>Bew&auml;sserung geplant<td align="right">{:s}</tr>\n'\
-            .format("Ja" if self.settings.irr_scheduled else "Nein")
+        self.rep += '<tr><td>Bew&auml;sserung geplant<td>{:s}<td>{:s}</tr>\n'\
+                    .format('J' if self.settings.irr_scheduled[0] else 'N',
+                            'J' if self.settings.irr_scheduled[1] else 'N')
 
-        if (self.tank.empty):
-            tank_status = "leer"
-            col = "red"
-        elif (self.tank.low):
-            col = "orange"
-            tank_status = "niedrig"
-        else:
-            col = "white"
-            tank_status = "i.O."
+        status = ["i.O.", "i.O."]
+        col    = ["white", "white"]
+        for i in range(2):
+            if (self.pumps[i].status == 2):
+                col[i]    = "red"
+                status[i] = "on: error"
+            elif (self.pumps[i].status == 4):
+                col[i]    = "red"
+                status[i] = "off: error"
 
-        self.rep += '<tr><td>Status Tank<td align="right" bgcolor="{:s}">{:s}</tr>\n'\
-            .format(col, tank_status)
+        self.rep += '<tr><td>Status Pumpen<td bgcolor="{:s}">{:s}<td bgcolor="{:s}">{:s}</tr>\n'\
+                    .format(col[0], status[0], col[1], status[1])
 
-        if (self.pump.status == 2):
-            col = "red"
-            pump_status_str = "on: error"
-        elif (self.pump.status == 4):
-            col = "red"
-            pump_status_str = "off: error"
-        else:
-            col = "white"
-            pump_status_str = "i.O."
+        status = ['leer', 'niedrig', 'i.O.']
+        col    = ['red', 'orange', 'white']
+        self.rep += '<tr><td>Status Tank<td colspan="2" bgcolor="{:s}">{:s}</tr>\n'\
+                    .format(col[self.tank.status], status[self.tank.status])
 
-        self.rep += '<tr><td>Status Pumpe<td align="right" bgcolor="{:s}">{:s}</tr>\n'\
-            .format(col, pump_status_str)
-
-        next_alert =  time() + min(self.settings.alerts_defer_time, self.settings.alerts_repeat_time)
+        next_alert = time() + min(self.settings.alerts_defer_time, self.settings.alerts_repeat_time)
         next_alert = datetime.fromtimestamp(next_alert).strftime("%x %X")
-        self.rep += '<tr><td>n&auml;chste Mitteilung (falls aktiv)<td  align="right">{:s}</tr>'.format(next_alert)
+        self.rep += '<tr><td>n&auml;chste Mitteilung<td colspan="2">{:s}</tr>'.format(next_alert)
+        self.rep += '</table>\n'
+
+    def system_settings(self):
+        """
+        Add system settings (HTML table) to report.
+        """
+        self.rep += '<h2>Systemeinstellungen</h2>\n'
+        self.rep += '<table border="1">\n'
+        self.rep += '<tr><td>Automatische Benachrichtigung<td align="right">{:}</tr>\n'\
+                              .format("Ein" if(self.settings.auto_report) else "Aus")
+        self.rep += '<tr><td>Automatische Bew&auml;sserung<td align="right">{:}</tr>\n'\
+                              .format("Ein" if (self.settings.auto_irrigation) else "Aus")
+        self.rep += '<tr><td>Bew&auml;sserungsdauer (autom.) [s]<td align="right">{:d} / {:d}</tr>\n'\
+                              .format(self.settings.irr_duration_auto1, self.settings.irr_duration_auto2)
+        self.rep += '<tr><td>Bew&auml;sserungsdauer (manuell) [s]<td align="right">{:d}</tr>\n'\
+                              .format(self.settings.irr_duration_man)
+        self.rep += '<tr><td>Bew&auml;sserungspause [s]<td align="right">{:d}</tr>\n'\
+                              .format(self.settings.irr_rest)
+        self.rep += '<tr><td>max. Beleuchtungsst&auml;rke [lx]<td align="right">{:d}</tr>\n'\
+                              .format(self.min_light_irr)
         self.rep += '</table>\n'
 
     def footer(self):
