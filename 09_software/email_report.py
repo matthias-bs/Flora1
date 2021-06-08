@@ -7,7 +7,7 @@
 # - set up mail header
 # - send mail
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021 updated: 06/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -17,6 +17,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20210608 Added base_topic_flora to Email subject
 #
 # ToDo:
 # - 
@@ -53,6 +54,7 @@ class Email:
             config (ConfigParser): config file parser 
         """
         # Get e-Mail settings from config
+        self.base_topic_flora = config['MQTT'].get('base_topic_flora', None)
         self.smtp_server = config['Email'].get('smtp_server', None)
         self.smtp_port = config['Email'].getint('smtp_port', None)
         self.smtp_receiver = config['Email'].get('receiver_email', None)
@@ -75,7 +77,7 @@ class Email:
             bool: success
         """
         msg = EmailMessage()
-        msg['Subject'] = "Flora Status"
+        msg['Subject'] = "Flora Status (" + self.base_topic_flora + ")"
         msg['From'] = self.smtp_email
         msg['To'] = self.smtp_receiver
         msg.set_content(content, subtype='html')
