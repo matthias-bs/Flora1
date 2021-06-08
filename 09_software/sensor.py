@@ -8,7 +8,7 @@
 # - compares sensor data with plant data
 # - allows to check low battery, sensor data timeout and sensor data valid
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021 updated: 06/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -18,6 +18,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20210608 Added support of 2nd pump
 #
 # ToDo:
 # - 
@@ -38,6 +39,7 @@ class Sensor:
         General:
         --------
         name (string):      sensor name
+        pump (int):         pump serving this plant
         tstamp (float):     timestamp of last sensor data reception
         plant (string):     name of the plant assigned to this sensor
         batt_min (int):     minimum battery level [%]
@@ -80,6 +82,7 @@ class Sensor:
         """
         # General
         self.name = sensor_name
+        self.pump = 0
         self.tstamp = 0
         self.plant = "<undefined>"
         self.batt_min = batt_min
@@ -116,7 +119,7 @@ class Sensor:
         self.light_il = False
         self.light_oh = False
     
-    def init_plant(self, plant,
+    def init_plant(self, plant, pump,
                    temp_min, temp_max,
                    cond_min, cond_max,
                    moist_lo, moist_hi,
@@ -127,6 +130,7 @@ class Sensor:
         
         Parameters:
             plant (string):     name of the plant assigned to this sensor
+            pump (int):         pump serving this plant
             temp_min (float):   temperature [°C]
             temp_max (float):   temperature [°C]
             cond_min (int):     conductivity [µS/cm]
@@ -140,6 +144,7 @@ class Sensor:
             light_max (int):    light [lux]
         """       
         self.plant = plant
+        self.pump  = pump
         self.temp_min = temp_min
         self.temp_max = temp_max
         self.cond_min = cond_min
