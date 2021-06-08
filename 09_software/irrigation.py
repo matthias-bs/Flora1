@@ -9,7 +9,7 @@
 #   - various sensor values
 #   - rest time after previous irrigation
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021 updated: 06/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -19,6 +19,7 @@
 # History:
 #
 # 20210118 Extracted from flora.py
+# 20210608 Added support of 2nd pump
 #
 # ToDo:
 # - 
@@ -44,7 +45,7 @@ class Irrigation:
     ###################################################################################################
     # Handle manual irrigation
     ###################################################################################################
-    def man_irrigation(self, settings, mqtt_client, pump):
+    def man_irrigation(self, settings, mqtt_client, pumps):
         """
         Manually run irrigation
         
@@ -55,14 +56,15 @@ class Irrigation:
         """
         # Check if flag has been set (asynchronously) in 'mqtt_man_irrigation_request' 
         # message callback function
-        if (pump.busy == PUMP_BUSY_MAN):
-            print_line('Running pump for {:d} seconds -->'.format(settings.irr_duration_man),
-                        console=True, sd_notify=True)
-            pump.power_on(settings.irr_duration_man)
-            pump.busy = 0
-            mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0), qos=2)
-            print_line('<-- Running pump finished, Status: {}'.format(pump.status_str), 
-                        console=True, sd_notify=True)
+        for i in range(2):
+            if (pumps[i].busy == PUMP_BUSY_MAN):
+                print_line('Running pump #{} for {:d} seconds -->'.format(i+1, settings.irr_duration_man),
+                           console=True, sd_notify=True)
+                pumps[i].power_on(settings.irr_duration_man)
+                pumps[i].busy = 0
+                mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', str(0), qos = 1)
+                print_line('<-- Running pump #{} finished, Status: {}'.format(i+1, pumps[i].status_str), 
+                            console=True, sd_notify=True)
 
 
     ###################################################################################################
@@ -99,38 +101,49 @@ class Irrigation:
         nighttime_end = now.replace(hour=settings.night_end_hr, minute=settings.night_end_min, second=0, microsecond=0)
 
         if ((now >= nighttime_start) or (now < nighttime_end)):
-            return (False)
-
-        for sensor in sensors:
-            if (sensors[sensor].valid == False):
-                # At least one sensor with timeout -> bail out 
-                return (False)
-            if (sensors[sensor].light_il):
-                # At least one light value over irrigation limit -> bail out
-                return (False)
-            if (sensors[sensor].moist_oh):
-                # At least one moisture value over range -> bail out 
-                return (False)
-            if (sensors[sensor].moist_ul):
-                # At least one moisture value under range -> ready!
-                break
-            else:
-                # All moisture values within desired range -> nothing to do!
-                return (False)
-                
-        if ((time() - pump.timestamp) < settings.irr_rest):
-            # All sensor values are within range, but time since last irrigation (irr_rest)
-            # has not expired yet -> bailing out
             if (VERBOSITY > 1):
-                print_line("Auto irrigation scheduled.")
-            return (True)
+                print_line("auto_irrigation: sleep time! Zzzz...")
+            return [False, False]
+
+        # Evaluate per pump
+        activate = [False, False]
+        for p in range(2):
+            for sensor in sensors:
+                if (sensors[sensor].pump != p+1):
+                    continue
+                if (sensors[sensor].valid == False):
+                    # At least one sensor with timeout -> bail out
+                    break
+                if (sensors[sensor].light_il):
+                    # At least one light value over irrigation limit -> bail out
+                    break
+                if (sensors[sensor].moist_oh):
+                    # At least one moisture value over range -> bail out 
+                    break
+                if (sensors[sensor].moist_ul):
+                    # At least one moisture value under range -> ready!
+                    activate[p] = True
+                    break
+                # Else: All moisture values (regarding this pump) within desired range -> nothing to do!
+
+        schedule = [False, False]
+        for p in range(2):
+            if activate[p]:
+                if ((time.time() - pumps[p].timestamp) < settings.irr_rest):
+                    # All sensor values are within range, but time since last irrigation (irr_rest)
+                    # has not expired yet -> bailing out
+                    if (VERBOSITY > 1):
+                        print_line("Auto irrigation: pump #{} scheduled.".format(p))
+                    schedule[p] = True
+                elif (pumps[p].busy == 0):
+                    # Pump has not been started manually - ready!
+                    duration = settings.irr_duration_auto1 if (p == 0) else settings.irr_duration_auto2
+                    print_line("Auto irrigation: running pump #{} for {:d} seconds"
+                               .format(p+1, duration), console=True, sd_notify=True)
+                    pumps[p].busy = PUMP_BUSY_AUTO
+                    pumps[p].power_on(duration)
+                    pumps[p].busy = 0
+                    pumps[p].timestamp = time.time()
         
-        if (pump.busy == 0):
-            # Pump has not been started manually - ready!
-            print_line("Auto irrigation running for {:d} seconds"
-                    .format(settings.irr_duration_auto), console=True, sd_notify=True)
-            pump.busy = PUMP_BUSY_AUTO
-            pump.power_on(settings.irr_duration_auto)
-            pump.busy = 0
-            pump.timestamp = time()
-            return (False)
+        return schedule
+                
