@@ -14,7 +14,7 @@
 # MQTT subscriptions:
 #     <base_topic_sensors>/<sensors>{}      (JSON encoded data)
 #     <base_topic>/man_report_cmd           (-)
-#     <base_topic>/man_irr_cmd              (-)
+#     <base_topic>/man_irr_cmd              (1|2)
 #     <base_topic>/man_irr_duration_ctrl    (<seconds>)
 #     <base_topic>/auto_report_ctrl         (0|1)
 #     <base_topic>/auto_irr_ctrl            (0|1)
@@ -63,6 +63,7 @@
 # 20210118 Renamed MQTT topics
 # 20210602 Added MQTT status message and last will
 #          Added MQTT tank message
+# 20210608 Added support of 2nd pump
 #
 # ToDo:
 # - compare light value against daily average
@@ -228,7 +229,7 @@ def mqtt_man_report_cmd(client, userdata, msg):
     """
     print_line('MQTT message "man_report_cmd" received.', console=True, sd_notify=True)
 
-    Email(config).send(Report(settings, sensors, tank, pump).get_content())
+    Email(config).send(Report(settings, sensors, tank, pumps).get_content())
 
 
 def mqtt_man_irr_cmd(client, userdata, msg):
@@ -242,15 +243,18 @@ def mqtt_man_irr_cmd(client, userdata, msg):
         userdata: private user data as set in Client() or user_data_set()
         msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
     """
-    print_line('MQTT message "man_irr_cmd" received', console=True, sd_notify=True)
-    if (pump.busy):
-        print_line('Pump already busy ({:s}), ignoring request'
-                   .format("manual" if (pump.busy == PUMP_BUSY_MAN) else "auto"),
-                   console=True, sd_notify=True)
-        return
+    val = int(msg.payload)
+    print_line('MQTT message "man_irr_cmd({})" received'.format(val), console=True, sd_notify=True)
+    if ((val == 1) or (val == 2)):
+        idx = val - 1
+        if (pumps[idx].busy):
+            print_line('Pump #{} already busy ({:s}), ignoring request'
+                       .format(val, "manual" if (pumps[idx].busy == PUMP_BUSY_MAN) else "auto"),
+                       console=True, sd_notify=True)
+            return
 
-    mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(1), qos=2)
-    pump.busy = PUMP_BUSY_MAN
+        mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(val), qos = 1)
+        pumps[idx].busy = PUMP_BUSY_MAN
 
 
 def mqtt_man_irr_duration_ctrl(client, userdata, msg):
@@ -395,8 +399,10 @@ if __name__ == '__main__':
     # Generate tank object (fill level sensors)
     tank = Tank(GPIO_TANK_SENS_LOW, GPIO_TANK_SENS_EMPTY)
 
-    # Generate pump object
-    pump = Pump(GPIO_PUMP_POWER, GPIO_PUMP_STATUS, tank)
+    # Generate pump objects
+    pumps = [None, None]
+    for i in range(2):
+        pumps[i] = Pump(GPIO_PUMP_POWER[i], GPIO_PUMP_STATUS[i], tank)
     
     # General email object
     email = Email(config)
@@ -447,6 +453,7 @@ if __name__ == '__main__':
         
         sensors[sensor].init_plant(
             plant     = config[sensor].get('name'),
+            pump      = config[sensor].getint('pump'),
             temp_min  = config[sensor].getfloat('temp_min'),
             temp_max  = config[sensor].getfloat('temp_max'),
             cond_min  = config[sensor].getint('cond_min'),
@@ -501,7 +508,8 @@ if __name__ == '__main__':
     
     # Init system alerts
     sensor_err_alert = Alert(settings, config['Alerts'].getint('e_sensor', 2), "Sensor")
-    pump_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump")
+    pump1_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump1")
+    pump2_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump2")
     tank_low_alert   = Alert(settings, config['Alerts'].getint('e_tank_low', 2), "Tank Low")
     tank_empty_alert = Alert(settings, config['Alerts'].getint('e_tank_empty', 2), "Tank Empty")
     
@@ -533,11 +541,11 @@ if __name__ == '__main__':
     ###############################################################################
     while (True):
         # Execute manual irrigation (if requested)
-        irrigation.man_irrigation(settings, mqtt_client, pump)
+        irrigation.man_irrigation(settings, mqtt_client, pumps)
         
         # Execute automatic irrigation
         if (settings.auto_irrigation):
-            settings.irr_scheduled = irrigation.auto_irrigation(settings, sensors, pump)
+            settings.irr_scheduled = irrigation.auto_irrigation(settings, sensors, pumps)
 
         alert  = batt_alert.check_sensors(sensors, 'batt_ul')
         alert |= temp_alert.check_sensors(sensors, 'temp_ul', 'temp_oh')
@@ -546,7 +554,8 @@ if __name__ == '__main__':
         alert |= cond_alert.check_sensors(sensors, 'cond_ul', 'cond_oh')
         alert |= light_alert.check_sensors(sensors, 'light_ul', 'light_oh')
         alert |= sensor_err_alert.check_sensors(sensors, 'timeout')
-        alert |= pump_err_alert.check_system(pump.status == 2)
+        alert |= pump1_err_alert.check_system(pumps[0].status == 2)
+        alert |= pump2_err_alert.check_system(pumps[1].status == 2)
         alert |= tank_low_alert.check_system(tank.low)
         alert |= tank_empty_alert.check_system(tank.empty)
        
@@ -554,14 +563,14 @@ if __name__ == '__main__':
         if (settings.auto_report):
             if (alert):
                 print_line('Alert triggered.', console=True, sd_notify=True)
-                Email(config).send(Report(settings, sensors, tank, pump).get_content())
+                Email(config).send(Report(settings, sensors, tank, pumps).get_content())
 
         # Publish status flags/values
         mqtt_client.publish(settings.base_topic_flora + '/status', "online", qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/auto_report_stat', str(settings.auto_report), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/auto_irr_stat', payload=str(settings.auto_irrigation), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_duration_stat', payload=str(settings.irr_duration_man), qos=1, retain=True)
-        mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0))
+        mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0), qos = 1)
         mqtt_client.publish(settings.base_topic_flora + '/tank', str(tank.status), qos = 1, retain=True)
 
         if (VERBOSITY > 1):
@@ -625,7 +634,7 @@ if __name__ == '__main__':
             for step in range(period):
                 # Quit sleeping if flag has been set (asynchronously) in 'mqtt_man_irr_cmd'
                 # message callback function
-                if (pump.busy):
+                if (pumps[0].busy or pumps[1].busy):
                     break
                 sleep(1)
         else:
