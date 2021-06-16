@@ -20,13 +20,14 @@
 #
 # 20210118 Extracted from flora.py
 # 20210608 Added support of 2nd pump
+# 20210616 Fixed auto_irrigation()
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
-from time import time
+import time
 from datetime import datetime
 from settings import *
 from print_line import *
@@ -48,13 +49,13 @@ class Irrigation:
     def man_irrigation(self, settings, mqtt_client, pumps):
         """
         Manually run irrigation
-        
+
         Parameters:
             settings (Settings):    instance of Settings class
             mqtt_client (Client):   MQTT client
             pump (Pump):            instance of Pump class
         """
-        # Check if flag has been set (asynchronously) in 'mqtt_man_irrigation_request' 
+        # Check if flag has been set (asynchronously) in 'mqtt_man_irrigation_request'
         # message callback function
         for i in range(2):
             if (pumps[i].busy == PUMP_BUSY_MAN):
@@ -63,14 +64,14 @@ class Irrigation:
                 pumps[i].power_on(settings.irr_duration_man)
                 pumps[i].busy = 0
                 mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', str(0), qos = 1)
-                print_line('<-- Running pump #{} finished, Status: {}'.format(i+1, pumps[i].status_str), 
+                print_line('<-- Running pump #{} finished, Status: {}'.format(i+1, pumps[i].status_str),
                             console=True, sd_notify=True)
 
 
     ###################################################################################################
     # Handle automatic irrigation
     ###################################################################################################
-    def auto_irrigation(self, settings, sensors, pump):
+    def auto_irrigation(self, settings, sensors, pumps):
         """
         Automatically run irrigation -
         depending on sensor values, time of day and time since last irrigation
@@ -90,7 +91,7 @@ class Irrigation:
             settings (Settings):    instance of Settings class
             sensors (Sensor{}):     dictionary of Sensor class
             pump (Pump):            instance of Pump class
-        
+
         Returns:
             bool:   true  if irrigation is scheduled
                     false otherwise
@@ -118,7 +119,7 @@ class Irrigation:
                     # At least one light value over irrigation limit -> bail out
                     break
                 if (sensors[sensor].moist_oh):
-                    # At least one moisture value over range -> bail out 
+                    # At least one moisture value over range -> bail out
                     break
                 if (sensors[sensor].moist_ul):
                     # At least one moisture value under range -> ready!
@@ -144,6 +145,5 @@ class Irrigation:
                     pumps[p].power_on(duration)
                     pumps[p].busy = 0
                     pumps[p].timestamp = time.time()
-        
+
         return schedule
-                
