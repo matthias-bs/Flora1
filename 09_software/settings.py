@@ -9,7 +9,7 @@
 # modify config.ini instead!!!
 #
 #
-# created: 01/2021 updated: 06/2021
+# created: 01/2021 updated: 10/2022
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -21,6 +21,7 @@
 # 20210117 Extracted from flora.py
 # 20210602 Added PROJECT_BUILD
 # 20210608 Added support of 2nd pump
+# 20221010 Fixed initialization of irr_rest
 #
 # ToDo:
 # - 
@@ -36,8 +37,8 @@ DEBUG               = False
 VERBOSITY           = 1
 
 PROJECT_NAME        = 'flora'
-PROJECT_VERSION     = 'V2.0'
-PROJECT_BUILD       = '20210608'
+PROJECT_VERSION     = 'V2.0.1'
+PROJECT_BUILD       = '20221010'
 PROJECT_URL         = 'https://github.com/matthias-bs/Flora1'
 
 GPIO_TANK_SENS_LOW  = 23
@@ -73,7 +74,7 @@ class Settings:
         self.irr_duration_auto1 = config['General'].getint('irrigation_duration_auto1', IRR_DURATION_AUTO)
         self.irr_duration_auto2 = config['General'].getint('irrigation_duration_auto2', IRR_DURATION_AUTO)
         self.irr_duration_man = config['General'].getint('irrigation_duration_man', IRR_DURATION_MAN)
-        self.irr_rest = config['General'].getfloat('irrigation_rest', IRR_REST)
+        self.irr_rest = config['General'].getint('irrigation_rest', IRR_REST)
         self.base_topic_sensors = config['MQTT'].get('base_topic_sensors', 'miflora-mqtt-daemon').lower()
         self.base_topic_flora = config['MQTT'].get('base_topic_flora', 'flora').lower()
         night_begin = config['General'].get('night_begin', NIGHT_BEGIN)
