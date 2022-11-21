@@ -1,3 +1,4 @@
+"""Logging to console/systemd with formatting and classification"""
 ###############################################################################
 # print_line.py
 #
