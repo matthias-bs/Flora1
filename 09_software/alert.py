@@ -41,6 +41,7 @@ from print_line import print_line
 # Alert class - Generate alerts depending on plant/sensor data and filter settings
 #########################################################################################
 class Alert:
+    # pylint: disable=too-many-instance-attributes
     """
     Handle Alerts
 
