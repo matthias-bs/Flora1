@@ -85,7 +85,7 @@ from ppretty import ppretty #for debugging only
 
 # Flora specific modules
 from settings import *
-from print_line import *
+from print_line import print_line
 from gpio import *
 from sensor import Sensor
 from tank import Tank
