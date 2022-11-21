@@ -67,6 +67,7 @@ BATT_LOW            = 5
 ###############################################################################
 class Settings:
     # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-few-public-methods
     def __init__(self, config):
         self.irr_scheduled = [False, False]
         self.auto_report = config['General'].getint('auto_report', AUTO_REPORT)
