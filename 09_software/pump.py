@@ -94,7 +94,7 @@ class Pump:
                  0 otherwise.
         """
 
-        if self.tank.empty && power == 1:
+        if self.tank.empty and power == 1:
             return 1
         GPIO.output(self.p_power, power)
         return 0
