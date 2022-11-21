@@ -99,7 +99,7 @@ from email_report import *
 # Options expected (mandatory!) in each sensor-/plant-data section of the config-file
 OPTIONS = [
     'name',
-    'temp_min', 
+    'temp_min',
     'temp_max',
     'cond_min',
     'cond_max',
@@ -121,7 +121,7 @@ def mqtt_init(config):
     Init MQTT client and connect to MQTT broker
 
     Parameters:
-        config (ConfigParser): config file parser 
+        config (ConfigParser): config file parser
     """
 
     # MQTT Connection
@@ -139,10 +139,10 @@ def mqtt_init(config):
             certfile=config['MQTT'].get('tls_certfile', None),
             tls_version=ssl.PROTOCOL_SSLv23
         )
-    
+
     # Set 'Last Will and Testament"
     mqtt_client.will_set(settings.base_topic_flora + '/status', 'dead', qos=1, retain=True)
-    
+
     if config['MQTT'].get('username'):
         mqtt_client.username_pw_set(config['MQTT'].get('username'),
                                     config['MQTT'].get('password', None))
@@ -335,7 +335,7 @@ def mqtt_on_message(client, userdata, msg):
     Parameters:
         client: client instance for this callback
         userdata: private user data as set in Client() or user_data_set()
-        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain    
+        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain  
     """
     base_topic, sensor = msg.topic.split('/')
 
@@ -402,10 +402,10 @@ if __name__ == '__main__':
     pumps = [None, None]
     for i in range(2):
         pumps[i] = Pump(GPIO_PUMP_POWER[i], GPIO_PUMP_STATUS[i], tank)
-    
+
     # General email object
     email = Email(config)
- 
+
     # Get configuration data from section [Daemon]
     daemon_enabled = config['Daemon'].getboolean('enabled', 'yes')
 
@@ -422,19 +422,20 @@ if __name__ == '__main__':
                 error=True, sd_notify=True)
         sys.exit(1)
 
-    # Get sensor timeout from config file 
+    # Get sensor timeout from config file
     sensor_timeout = config['MQTT'].getint('message_timeout', MESSAGE_TIMEOUT)
-    
+
     # Get sensor battery limit from config file
     sensor_batt_min = config['General'].getint('batt_low', BATT_LOW)
-        
+
     # Create a dictionary of Sensor objects
     sensors = {}
     for sensor in sensor_list:
         sensors[sensor] = Sensor(sensor, sensor_timeout, sensor_batt_min)
         # check if config file contains a section for this sensor
         if not config.has_section(sensor):
-            print_line('The configuration file "config.ini" has a sensor named {} in the [MQTT] section,'
+            print_line('The configuration file "config.ini" has a sensor named {} \
+                        in the [MQTT] section,'
                     .format(sensor), error=True, sd_notify=True)
             print_line('but no plant data has provided in a section named accordingly.',
                     error=True, sd_notify=True)
@@ -458,7 +459,7 @@ if __name__ == '__main__':
             cond_min  = config[sensor].getint('cond_min'),
             cond_max  = config[sensor].getint('cond_max'),
             moist_min = config[sensor].getint('moist_min'),
-            moist_lo  = config[sensor].getint('moist_lo'),            
+            moist_lo  = config[sensor].getint('moist_lo'),      
             moist_hi  = config[sensor].getint('moist_hi'),
             moist_max = config[sensor].getint('moist_max'),
             light_min = config[sensor].getint('light_min'),
@@ -489,9 +490,9 @@ if __name__ == '__main__':
                console=True, sd_notify=True)
 
     for sensor in sensors:
-        while (not(sensors[sensor].valid)):
+        while not(sensors[sensor].valid):
             sleep(1)
-        if (VERBOSITY > 1):
+        if VERBOSITY > 1:
             print_line(sensor + ' ready!', console=True, sd_notify=True)
 
     print_line('<-- Initial reception of MQTT sensor data succeeded.',
