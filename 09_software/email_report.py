@@ -36,7 +36,7 @@ from print_line import print_line
 class Email:
     """
     Handle e-Mails
-    
+
     Attributes:
         smtp_server (string):   SMTP server address
         smtp_port (int):        SMTP server port
@@ -44,14 +44,14 @@ class Email:
         smtp_email (string):    SMTP mail sender address
         smtp_login (string):    SMTP server login
         smtp_passwd (string):   SMTP server password
-        
+
     """
     def __init__(self, config):
         """
         The constructor for Email class.
 
         Parameters:
-            config (ConfigParser): config file parser 
+            config (ConfigParser): config file parser
         """
         # Get e-Mail settings from config
         self.base_topic_flora = config['MQTT'].get('base_topic_flora', None)
@@ -61,10 +61,9 @@ class Email:
         self.smtp_email = config['Email'].get('smtp_email', None)
         self.smtp_login = config['Email'].get('smtp_login', None)
         self.smtp_passwd = config['Email'].get('smtp_passwd', None)
-        
+
         if VERBOSITY > 1:
-            print_line('E-Mail settings: {:s}, {:d}, {:s}, {:s}'\
-                    .format(self.smtp_server, self.smtp_port, self.smtp_email, self.smtp_receiver))
+            print_line(F"E-Mail settings: {self.smtp_server}, {self.smtp_port}, {self.smtp_email}, {self.smtp_receiver}")
 
     def send(self, content):
         """
@@ -72,7 +71,7 @@ class Email:
 
         Parameters:
             content (string): mail content
-            
+
         Returns:
             bool: success
         """
