@@ -54,7 +54,7 @@ class Alert:
         - conductivity
         - moisture
         - light intensity
-    
+
     Attributes:
         alert_tstamp (float):   timestamp set by an alert of any category (class attribute!!!)
         defer_time (int):       defer time [s]
@@ -112,7 +112,7 @@ class Alert:
 
         Parameters:
             sensors (Sensors{}):    dictionary of Sensor class
-            attr1 (string):         name of 1st Sensor class attribute (comparison flag) to evaluate 
+            attr1 (string):         name of 1st Sensor class attribute (comparison flag) to evaluate
             attr2 (string):         name of 2nd Sencor class attribute (comparison flag) to evaluate
 
         Returns:    True  alert to be issued
@@ -147,7 +147,7 @@ class Alert:
 
             # Immediate alert, w/ / w/o repeat  
             if (self.mode == 1) or (self.mode == 2):
-                if (VERBOSITY > 0):
+                if VERBOSITY > 0:
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
                 alert = True
             elif (self.mode == 3) or (self.mode == 4):
@@ -156,7 +156,7 @@ class Alert:
                         print_line('Alert: {}(M3/4)'.format(self.name), console=True, sd_notify=True)
                     alert = True
 
-        if (active):
+        if active:
             if (self.mode == 2) and self.tstamp and self.repeat_expired():
                 # Condition active and repeat timer expired
                 # -> send alert and restart timer
@@ -164,17 +164,17 @@ class Alert:
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = true
                 self.tstamp = time()
-            if ((self.mode == 3) or (self.mode == 4)) and self.flag:
-                    if (self.defer_expired()):
-                        # Condition active, flag set and deferring timer expired
-                        # -> send alert
-                        if (VERBOSITY > 0):
-                            print_line('Alert: {}(M3/4), deferred)'.format(self.name), console=True, sd_notify=True)
-                        self.tstamp = time()
-                        alert = True
-                        if (self.mode == 3):
-                            # Alert will not be repeated
-                            self.flag = False
+            if (self.mode == 3) or (self.mode == 4) and self.flag:
+                if self.defer_expired():
+                    # Condition active, flag set and deferring timer expired
+                    # -> send alert
+                    if VERBOSITY > 0:
+                        print_line('Alert: {}(M3/4), deferred)'.format(self.name), console=True, sd_notify=True)
+                    self.tstamp = time()
+                    alert = True
+                    if self.mode == 3:
+                        # Alert will not be repeated
+                        self.flag = False
 
         else:
             # Condition not active
@@ -229,19 +229,19 @@ class Alert:
             if (self.mode == 2) and self.tstamp and self.repeat_expired():
                 # Condition active and repeat timer expired
                 # -> send alert and restart timer
-                if (VERBOSITY > 0):
+                if VERBOSITY > 0:
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = true
                 self.tstamp = time()
             if ((self.mode == 3) or (self.mode == 4)) and self.flag:
-                    if (self.defer_expired()):
+                    if self.defer_expired():
                         # Condition active, flag set and deferring timer expired
                         # -> send alert
-                        if (VERBOSITY > 0):
+                        if VERBOSITY > 0:
                             print_line('Alert: {}(M3/4), deferred)'.format(self.name), console=True, sd_notify=True)
                         self.tstamp = time()
                         alert = True
-                        if (self.mode == 3):
+                        if self.mode == 3:
                             # Alert will not be repeated
                             self.flag = False
 
