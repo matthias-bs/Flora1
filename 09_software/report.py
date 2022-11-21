@@ -84,7 +84,7 @@ class Report:
         self.rep += '<body>\n'
         self.rep += '<h1>Flora Status Report</h1>\n'
         date = datetime.now()
-        self.rep += 'erstellt: {:s}<br><br>\n'.format(date.strftime("%x %X"))    
+        self.rep += 'erstellt: {:s}<br><br>\n'.format(date.strftime("%x %X")) 
 
 
     def sensor_status(self):
