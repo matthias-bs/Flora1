@@ -66,6 +66,7 @@ BATT_LOW            = 5
 # Settings class - Global settings from config file, MQTT messages and others
 ###############################################################################
 class Settings:
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, config):
         self.irr_scheduled = [False, False]
         self.auto_report = config['General'].getint('auto_report', AUTO_REPORT)
