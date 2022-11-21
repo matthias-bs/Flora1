@@ -78,7 +78,7 @@ import os.path
 import json
 import paho.mqtt.client as mqtt
 from colorama import init as colorama_init
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 from configparser import ConfigParser
 from time import sleep
 from ppretty import ppretty #for debugging only
