@@ -1,7 +1,7 @@
+"""Send a report by email with config and content provided as parameters"""
 ###############################################################################
 # email_report.py
 #
-# This module provides the Email class.
 #
 # - set up communication with SMTP server
 # - set up mail header
