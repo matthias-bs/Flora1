@@ -66,7 +66,7 @@ class Alert:
         status (bool):          state flag
     """
     alert_tstamp = 0
-    
+
     def __init__(self, settings, mode, name = ""):
         """
         The constructor for Alert class.
@@ -87,7 +87,7 @@ class Alert:
         self.val_oh = 0
         # Status flag
         self.status = False
-        
+
     def repeat_expired(self):
         """
         Check if time to repeat the alert has expired.
@@ -95,8 +95,8 @@ class Alert:
         Returns:    True  if time to repeat has expired
                     False otherwise
         """
-        return ((time() - self.tstamp) > self.repeat_time)
-    
+        return (time() - self.tstamp) > self.repeat_time
+
     def defer_expired(self):
         """
         Check if time to defer the alert has expired.
@@ -104,7 +104,7 @@ class Alert:
         Returns:    True  if time to defer the alert has expired
                     False otherwise
         """
-        return ((time() - Alert.alert_tstamp) > self.defer_time)
+        return (time() - Alert.alert_tstamp) > self.defer_time
 
     def check_sensors(self, sensors, attr1, attr2=None):
         """
@@ -119,53 +119,52 @@ class Alert:
                     False otherwise
         """
         alert = False
-        
+
         # Save current state and calculate new state
         val_ul_d = self.val_ul
         self.val_ul = 0
         val_oh_d = self.val_oh
         self.val_oh = 0
-        
+
         # Generate state vector
         for i, s in enumerate(sensors):
-            if (getattr(sensors[s], attr1)):
+            if getattr(sensors[s], attr1):
                 self.val_ul |= (1 << i)
-            
-            if (attr2 != None):
-                if (getattr(sensors[s], attr2)):
+
+            if attr2 != None:
+                if getattr(sensors[s], attr2):
                     self.val_oh |= (1 << i)
 
         # change: level 0->1 change in state vector
         change = (self.val_ul & ~val_ul_d) or (self.val_oh & ~val_oh_d)
-        
+
         # Active: level 1 in state vector
         active = self.val_ul or self.val_oh
-        
-        
-        if (change):
+
+        if change:
             self.tstamp = time()
             self.flag = True
-            
+
             # Immediate alert, w/ / w/o repeat  
-            if ((self.mode == 1) or (self.mode == 2)):
+            if (self.mode == 1) or (self.mode == 2):
                 if (VERBOSITY > 0):
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
                 alert = True
-            elif ((self.mode == 3) or (self.mode == 4)):
-                if (self.defer_expired()):
-                    if (VERBOSITY > 0):
+            elif (self.mode == 3) or (self.mode == 4):
+                if self.defer_expired():
+                    if VERBOSITY > 0:
                         print_line('Alert: {}(M3/4)'.format(self.name), console=True, sd_notify=True)
                     alert = True
-        
+
         if (active):
-            if ((self.mode == 2) and self.tstamp and self.repeat_expired()):
+            if (self.mode == 2) and self.tstamp and self.repeat_expired():
                 # Condition active and repeat timer expired
                 # -> send alert and restart timer
-                if (VERBOSITY > 0):
+                if VERBOSITY > 0:
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = true
                 self.tstamp = time()
-            if (((self.mode == 3) or (self.mode == 4)) and self.flag):
+            if ((self.mode == 3) or (self.mode == 4)) and self.flag:
                     if (self.defer_expired()):
                         # Condition active, flag set and deferring timer expired
                         # -> send alert
@@ -183,10 +182,10 @@ class Alert:
             self.tstamp = 0
             self.flag = False
 
-        if (alert):
+        if alert:
             Alert.alert_tstamp = time()
 
-        return (alert)
+        return alert
 
     def check_system(self, status):
         """
@@ -211,30 +210,30 @@ class Alert:
         active = self.status
 
 
-        if (change):
+        if change:
             self.tstamp = time()
             self.flag = True
 
             # Immediate alert, w/ / w/o repeat
-            if ((self.mode == 1) or (self.mode == 2)):
-                if (VERBOSITY > 0):
+            if (self.mode == 1) or (self.mode == 2):
+                if VERBOSITY > 0:
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
                 alert = True
-            elif ((self.mode == 3) or (self.mode == 4)):
-                if (self.defer_expired()):
-                    if (VERBOSITY > 0):
+            elif (self.mode == 3) or (self.mode == 4):
+                if self.defer_expired():
+                    if VERBOSITY > 0:
                         print_line('Alert: {}(M3/4)'.format(self.name), console=True, sd_notify=True)
                     alert = True
 
-        if (active):
-            if ((self.mode == 2) and self.tstamp and self.repeat_expired()):
+        if active:
+            if (self.mode == 2) and self.tstamp and self.repeat_expired():
                 # Condition active and repeat timer expired
                 # -> send alert and restart timer
                 if (VERBOSITY > 0):
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = true
                 self.tstamp = time()
-            if (((self.mode == 3) or (self.mode == 4)) and self.flag):
+            if ((self.mode == 3) or (self.mode == 4)) and self.flag:
                     if (self.defer_expired()):
                         # Condition active, flag set and deferring timer expired
                         # -> send alert
@@ -252,7 +251,7 @@ class Alert:
             self.tstamp = 0
             self.flag = False
 
-        if (alert):
+        if alert:
             Alert.alert_tstamp = time()
 
-        return (alert)
+        return alert
