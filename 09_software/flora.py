@@ -245,9 +245,9 @@ def mqtt_man_irr_cmd(client, userdata, msg):
     """
     val = int(msg.payload)
     print_line('MQTT message "man_irr_cmd({})" received'.format(val), console=True, sd_notify=True)
-    if ((val == 1) or (val == 2)):
+    if (val == 1) or (val == 2):
         idx = val - 1
-        if (pumps[idx].busy):
+        if pumps[idx].busy:
             print_line('Pump #{} already busy ({:s}), ignoring request'
                        .format(val, "manual" if (pumps[idx].busy == PUMP_BUSY_MAN) else "auto"),
                        console=True, sd_notify=True)
@@ -342,13 +342,13 @@ def mqtt_on_message(client, userdata, msg):
     # Convert JSON ecoded data to dictionary
     message = json.loads(msg.payload.decode('utf-8'))
 
-    if (VERBOSITY > 1):
+    if VERBOSITY > 1:
         print_line('MQTT message from {}: {}'.format(sensor, message))
 
     # Discard data if moisture value suddenly drops to zero
     # FIXME: Is this still useful?
-    if ((float(message['moisture']) == 0) and
-        (sensors[sensor].moist > 5)):
+    if (float(message['moisture']) == 0) and
+        (sensors[sensor].moist > 5):
         return
 
     sensors[sensor].update_sensor(
@@ -418,7 +418,7 @@ if __name__ == '__main__':
     sensor_list = config['MQTT'].get('sensors')
     sensor_list = sensor_list.split(',')
 
-    if (sensor_list == []):
+    if sensor_list == []:
         print_line('No sensors found in the configuration file "config.ini" in the [MQTT] section.',
                 error=True, sd_notify=True)
         sys.exit(1)
@@ -434,7 +434,7 @@ if __name__ == '__main__':
     for sensor in sensor_list:
         sensors[sensor] = Sensor(sensor, sensor_timeout, sensor_batt_min)
         # check if config file contains a section for this sensor
-        if (not(config.has_section(sensor))):
+        if not config.has_section(sensor):
             print_line('The configuration file "config.ini" has a sensor named {} in the [MQTT] section,'
                     .format(sensor), error=True, sd_notify=True)
             print_line('but no plant data has provided in a section named accordingly.',
@@ -444,13 +444,13 @@ if __name__ == '__main__':
     # Read all plant data from the section (section name = sensor name)
     for sensor in sensors:
         for option in OPTIONS:
-            if (not(config.has_option(sensor, option))):
+            if not config.has_option(sensor, option):
                 print_line('The configuration file "config.ini" has a section "[' + section + ']",',
                         error=True, sd_notify=True)
                 print_line('but the mandatory key "' + option + '" is missing.',
                         error=True, sd_notify=True)
                 sys.exit(1)
-        
+
         sensors[sensor].init_plant(
             plant     = config[sensor].get('name'),
             pump      = config[sensor].getint('pump'),
@@ -466,7 +466,7 @@ if __name__ == '__main__':
             light_irr = config[sensor].getint('light_irr'),
             light_max = config[sensor].getint('light_max')
         )
-    
+
     # Initialize settings
     settings = Settings(config)
 
@@ -484,7 +484,7 @@ if __name__ == '__main__':
 
     mqtt_client.publish(settings.base_topic_flora + '/status', "online",
                         qos=1, retain=True)
-    
+
     # Wait until MQTT data is valid (this may take a while...)
     print_line('Waiting for MQTT sensor data -->',
                console=True, sd_notify=True)
@@ -505,15 +505,15 @@ if __name__ == '__main__':
     moist_info  = Alert(settings, config['Alerts'].getint('i_moisture', 2), "Moisture_Info")
     cond_alert  = Alert(settings, config['Alerts'].getint('w_conductivity', 2), "Conductivity")
     light_alert = Alert(settings, config['Alerts'].getint('w_light', 2), "Light")
-    
+
     # Init system alerts
     sensor_err_alert = Alert(settings, config['Alerts'].getint('e_sensor', 2), "Sensor")
     pump1_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump1")
     pump2_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump2")
     tank_low_alert   = Alert(settings, config['Alerts'].getint('e_tank_low', 2), "Tank Low")
     tank_empty_alert = Alert(settings, config['Alerts'].getint('e_tank_empty', 2), "Tank Empty")
-    
-    if (DEBUG):
+
+    if DEBUG:
         print_line("---------------------")
         print_line("Settings:")
         print_line("---------------------")
@@ -521,30 +521,29 @@ if __name__ == '__main__':
                            show_protected=True, show_static=True, show_properties=True, show_address=True),
                    console=True, sd_notify=True)
 
-    
-    if (DEBUG):
+    if DEBUG:
         print_line("---------------------")
         print_line("Sensors: {}".format(sensor_list))
         print_line("---------------------")
         print_line(ppretty(sensors, indent='    ', width=40, seq_length=40,
                            show_protected=True, show_static=True, show_properties=True, show_address=True),
                    console=True, sd_notify=True)
-        
-    if (VERBOSITY > 0):     
+
+    if VERBOSITY > 0:     
         print_line("-----------------------------------------")
         print_line("Starting Main Execution Loop.")
         print_line("-----------------------------------------")
-    
+
 
     ###############################################################################
     # Main execution loop
     ###############################################################################
-    while (True):
+    while True:
         # Execute manual irrigation (if requested)
         irrigation.man_irrigation(settings, mqtt_client, pumps)
-        
+
         # Execute automatic irrigation
-        if (settings.auto_irrigation):
+        if settings.auto_irrigation:
             settings.irr_scheduled = irrigation.auto_irrigation(settings, sensors, pumps)
 
         alert  = batt_alert.check_sensors(sensors, 'batt_ul')
@@ -558,10 +557,10 @@ if __name__ == '__main__':
         alert |= pump2_err_alert.check_system(pumps[1].status == 2)
         alert |= tank_low_alert.check_system(tank.low)
         alert |= tank_empty_alert.check_system(tank.empty)
-       
+
         # Execute automatic sending of mail reports
-        if (settings.auto_report):
-            if (alert):
+        if settings.auto_report:
+            if alert:
                 print_line('Alert triggered.', console=True, sd_notify=True)
                 Email(config).send(Report(settings, sensors, tank, pumps).get_content())
 
@@ -573,7 +572,7 @@ if __name__ == '__main__':
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0), qos = 1)
         mqtt_client.publish(settings.base_topic_flora + '/tank', str(tank.status), qos = 1, retain=True)
 
-        if (VERBOSITY > 1):
+        if VERBOSITY > 1:
             for sensor in sensors:
                 print_line("{:16s} Moisture: {:3d} % Temperature: {:2.1f} °C Conductivity: {:4d} uS/cm Light: {:6d} lx Battery: {:3d} %"
                         .format(sensor,
@@ -583,39 +582,39 @@ if __name__ == '__main__':
                         sensors[sensor].light,
                         sensors[sensor].batt))
 
-        if (VERBOSITY > 2):
+        if VERBOSITY > 2:
             print_line("Tank:  {}".format(tank), console=True, sd_notify=False)
             print_line("Pumpe: {}".format(pump), console=True, sd_notify=False)     
-       
-        if (DEBUG):
+
+        if DEBUG:
             print_line("------------------")
             print_line("Battery Alert:")
             print_line("------------------")
             print_line(ppretty(batt_alert, indent='    ', width=40, seq_length=40,
                                show_protected=True, show_static=True, show_properties=True, show_address=True),
                        console=True, sd_notify=True)
-        if (DEBUG):
+        if DEBUG:
             print_line("------------------")
             print_line("Temperature Alert:")
             print_line("------------------")
             print_line(ppretty(temp_alert, indent='    ', width=40, seq_length=40,
                                show_protected=True, show_static=True, show_properties=True, show_address=True),
                        console=True, sd_notify=True)
-        if (DEBUG):
+        if DEBUG:
             print_line("------------------")
             print_line("Moisture Alert:")
             print_line("------------------")
             print_line(ppretty(moist_alert, indent='    ', width=40, seq_length=40,
                                show_protected=True, show_static=True, show_properties=True, show_address=True),
                        console=True, sd_notify=True)
-        if (DEBUG):
+        if DEBUG:
             print_line("------------------")
             print_line("Conductivity Alert:")
             print_line("------------------")
             print_line(ppretty(cond_alert, indent='    ', width=40, seq_length=40,
                                show_protected=True, show_static=True, show_properties=True, show_address=True),
                        console=True, sd_notify=True)
-        if (DEBUG):
+        if DEBUG:
             print_line("------------------")
             print_line("Light Alert:")
             print_line("------------------")
@@ -623,8 +622,8 @@ if __name__ == '__main__':
                                show_protected=True, show_static=True, show_properties=True, show_address=True),
                        console=True, sd_notify=True)
 
-        if (daemon_enabled):
-            if (VERBOSITY > 1):
+        if daemon_enabled:
+            if VERBOSITY > 1:
                 print_line('Sleeping ({} seconds) ...'.format(period),
                         console=True, sd_notify=False)
             mqtt_client.publish(settings.base_topic_flora + '/status', "idle",
@@ -634,7 +633,7 @@ if __name__ == '__main__':
             for step in range(period):
                 # Quit sleeping if flag has been set (asynchronously) in 'mqtt_man_irr_cmd'
                 # message callback function
-                if (pumps[0].busy or pumps[1].busy):
+                if pumps[0].busy or pumps[1].busy:
                     break
                 sleep(1)
         else:
