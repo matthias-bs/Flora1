@@ -78,7 +78,7 @@ class Pump:
     @property
     def _drvstatus(self):
         """Get raw value (bool) of status pin."""
-        return (GPIO.input(self.p_status))
+        return GPIO.input(self.p_status)
 
     def control(self, power):
         """
@@ -94,7 +94,7 @@ class Pump:
                  0 otherwise.
         """
 
-        if self.tank.empty & power == 1:
+        if self.tank.empty && power == 1:
             return 1
         GPIO.output(self.p_power, power)
         return 0
@@ -117,7 +117,7 @@ class Pump:
             return self.status
         GPIO.output(self.p_power, GPIO.HIGH)
         sleep(0.5)
-        for step in range(on_time):
+        for _ in range(on_time):
             if self._drvstatus != GPIO.HIGH:
                 self.status = 2
                 break
@@ -137,8 +137,7 @@ class Pump:
             return "o.k."
         if self.status == 1:
             return "tank empty"
-        else:
-            return "error"
+        return "error"
 
     def __str__(self):
         return "{}Pin# driver control: {:2}, Pin# driver status: {:2}, Status: {:>10}, Busy: {}, Timestamp: {}"\
