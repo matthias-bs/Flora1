@@ -131,7 +131,7 @@ class Alert:
             if getattr(sensors[s], attr1):
                 self.val_ul |= (1 << i)
 
-            if attr2 != None:
+            if attr2 is not None:
                 if getattr(sensors[s], attr2):
                     self.val_oh |= (1 << i)
 
@@ -145,7 +145,7 @@ class Alert:
             self.tstamp = time()
             self.flag = True
 
-            # Immediate alert, w/ / w/o repeat  
+            # Immediate alert, w/ / w/o repeat
             if (self.mode == 1) or (self.mode == 2):
                 if VERBOSITY > 0:
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
@@ -234,16 +234,16 @@ class Alert:
                 alert = true
                 self.tstamp = time()
             if ((self.mode == 3) or (self.mode == 4)) and self.flag:
-                    if self.defer_expired():
-                        # Condition active, flag set and deferring timer expired
-                        # -> send alert
-                        if VERBOSITY > 0:
-                            print_line('Alert: {}(M3/4), deferred)'.format(self.name), console=True, sd_notify=True)
-                        self.tstamp = time()
-                        alert = True
-                        if self.mode == 3:
-                            # Alert will not be repeated
-                            self.flag = False
+                if self.defer_expired():
+                    # Condition active, flag set and deferring timer expired
+                    # -> send alert
+                    if VERBOSITY > 0:
+                        print_line('Alert: {}(M3/4), deferred)'.format(self.name), console=True, sd_notify=True)
+                    self.tstamp = time()
+                    alert = True
+                    if self.mode == 3:
+                        # Alert will not be repeated
+                        self.flag = False
 
         else:
             # Condition not active
