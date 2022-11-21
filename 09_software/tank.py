@@ -62,7 +62,7 @@ class Tank:
         Returns:
             bool: True if tank is empty, false otherwise.
         """
-        return GPIO.input(self.p_empty) == True
+        return GPIO.input(self.p_empty)
 
     @property
     def low(self):
@@ -72,7 +72,7 @@ class Tank:
         Returns:
             bool: True if tank is low, false otherwise.
         """
-        return GPIO.input(self.p_low) == True
+        return GPIO.input(self.p_low)
 
     @property
     def status(self):
