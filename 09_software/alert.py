@@ -1,7 +1,8 @@
+"""This module provides the Alert class"""
 ###############################################################################
 # Alert.py
 #
-# This module provides the Alert class
+# 
 #
 # - detects changes / active range violations attributes of Sensor instances
 # - detects changes / active system status errors (e.g. tank empty)
