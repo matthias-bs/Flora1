@@ -22,7 +22,7 @@
 # 20210608 Added support of 2nd pump
 # 20210616 Fixed auto_irrigation()
 #
-# ToDo:
+# To Do:
 # -
 #
 ###############################################################################
@@ -112,7 +112,7 @@ class Irrigation:
             for sensor in sensors:
                 if sensors[sensor].pump != p+1:
                     continue
-                if sensors[sensor].valid == False:
+                if not sensors[sensor].valid:
                     # At least one sensor with timeout -> bail out
                     break
                 if sensors[sensor].light_il:
