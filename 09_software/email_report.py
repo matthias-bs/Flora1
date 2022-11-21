@@ -19,7 +19,7 @@
 # 20210117 Extracted from flora.py
 # 20210608 Added base_topic_flora to Email subject
 #
-# ToDo:
+# To Do:
 # -
 #
 ###############################################################################
