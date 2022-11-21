@@ -2,7 +2,6 @@
 ###############################################################################
 # Alert.py
 #
-# 
 #
 # - detects changes / active range violations attributes of Sensor instances
 # - detects changes / active system status errors (e.g. tank empty)
