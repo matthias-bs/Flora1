@@ -63,7 +63,8 @@ class Email:
         self.smtp_passwd = config['Email'].get('smtp_passwd', None)
 
         if VERBOSITY > 1:
-            print_line(F"E-Mail settings: {self.smtp_server}, {self.smtp_port}, {self.smtp_email}, {self.smtp_receiver}")
+            print_line(F"E-Mail settings: {self.smtp_server}, {self.smtp_port}, \
+                         {self.smtp_email}, {self.smtp_receiver}")
 
     def send(self, content):
         """
