@@ -19,7 +19,7 @@
 # 20210602 Added property <status>
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
@@ -62,7 +62,7 @@ class Tank:
         Returns:
             bool: True if tank is empty, false otherwise.
         """
-        return (GPIO.input(self.p_empty) == True)
+        return GPIO.input(self.p_empty) == True
 
     @property
     def low(self):
@@ -72,7 +72,7 @@ class Tank:
         Returns:
             bool: True if tank is low, false otherwise.
         """
-        return (GPIO.input(self.p_low) == True)
+        return GPIO.input(self.p_low) == True
 
     @property
     def status(self):
@@ -84,13 +84,13 @@ class Tank:
         """
         if self.empty:
             return 0
-        elif self.low:
+        if self.low:
             return 1
         else:
             return 2
-    
+
     def __str__(self):
-        if (self.name != ""):
+        if self.name != "":
             name_str = "Name: {} ".format(self.name)
         else:
             name_str = ""
