@@ -20,7 +20,7 @@
 # 20210117 Extracted from flora.py
 # 20210608 Added support of 2nd pump
 #
-# ToDo:
+# To Do:
 # -
 #
 ###############################################################################
@@ -33,7 +33,7 @@ from time import time
 class Sensor:
     """
     This is a class for sensor data, plant specific limits and all the rest.
-    
+
     Attributes:
         General:
         --------
@@ -44,7 +44,7 @@ class Sensor:
         batt_min (int):     minimum battery level [%]
         _tout (float):      max. time between data updates
         valid (bool):       sensor data is valid
-    
+
         Actual sensor values:
         ---------------------
         temp (float):       temperature [°C]
@@ -52,7 +52,7 @@ class Sensor:
         moist (int):        moisture [%]
         light (int):        light [lux]
         batt (int):         battery [%]
-        
+
         Lower limits (desired by the plant):
         ------------------------------------
         temp_min (float):   temperature [°C]
@@ -117,7 +117,7 @@ class Sensor:
         self.light_ul = False
         self.light_il = False
         self.light_oh = False
-    
+
     def init_plant(self, plant, pump,
                    temp_min, temp_max,
                    cond_min, cond_max,
@@ -126,7 +126,7 @@ class Sensor:
                    light_min, light_irr, light_max):
         """
         Initialize plant data
-        
+
         Parameters:
             plant (string):     name of the plant assigned to this sensor
             pump (int):         pump serving this plant
@@ -163,7 +163,7 @@ class Sensor:
     def update_sensor(self, temp, cond, moist, light, batt):
         """
         Update sensor data, timestamp and comparison flags
-        
+
         Parameters:
             temp (float):     temperature [°C]
             cond (int):       conductivity [µS/cm]
@@ -177,7 +177,7 @@ class Sensor:
         self.light = light
         self.batt = batt
         self.tstamp = time()
-        
+
         self.batt_ul = self.batt < self.batt_min
         self.temp_ul = self.temp < self.temp_min
         self.temp_oh = self.temp > self.temp_max
@@ -190,12 +190,12 @@ class Sensor:
         self.light_ul = self.light < self.light_min
         self.light_il = self.light > self.light_irr
         self.light_oh = self.light > self.light_max
-    
+
     @property    
     def valid(self):
         """
         Check if data is valid
-        
+
         Returns:
             bool: Sensor data has been updated initially and the last update occurred without timeout 
         """
