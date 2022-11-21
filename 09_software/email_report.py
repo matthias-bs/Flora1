@@ -20,7 +20,7 @@
 # 20210608 Added base_topic_flora to Email subject
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
@@ -31,7 +31,7 @@ from settings import *
 from print_line import print_line
 
 ###############################################################################
-# Email class - Setup email object from config file and send message 
+# Email class - Setup email object from config file and send message
 ###############################################################################
 class Email:
     """
@@ -62,7 +62,7 @@ class Email:
         self.smtp_login = config['Email'].get('smtp_login', None)
         self.smtp_passwd = config['Email'].get('smtp_passwd', None)
         
-        if (VERBOSITY > 1):
+        if VERBOSITY > 1:
             print_line('E-Mail settings: {:s}, {:d}, {:s}, {:s}'\
                     .format(self.smtp_server, self.smtp_port, self.smtp_email, self.smtp_receiver))
 
@@ -87,7 +87,7 @@ class Email:
 
         try:
             server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            if (DEBUG):
+            if DEBUG:
                 server.set_debuglevel(1)
             server.ehlo()  # Can be omitted
             server.starttls(context = context)
