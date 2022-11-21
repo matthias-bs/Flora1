@@ -105,6 +105,8 @@ class Sensor:
         self.cond_max = 0
         self.moist_hi = 0
         self.moist_max = 0
+        self.light_min = 0
+        self.light_irr = 0
         self.light_max = 0
         # Comparison results
         self.batt_ul = False
@@ -144,6 +146,7 @@ class Sensor:
             light_irr (int):    light [lux]
             light_max (int):    light [lux]
         """
+        # pylint: disable=too-many-arguments
         self.plant = plant
         self.pump  = pump
         self.temp_min = temp_min
@@ -173,6 +176,7 @@ class Sensor:
             light (int):      light [lux]
             batt (int):       battery [%]
         """
+        # pylint: disable=too-many-arguments
         self.temp = temp
         self.cond = cond
         self.moist = moist
