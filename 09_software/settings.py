@@ -72,12 +72,17 @@ class Settings:
         self.irr_scheduled = [False, False]
         self.auto_report = config['General'].getint('auto_report', AUTO_REPORT)
         self.auto_irrigation = config['General'].getint('auto_irrigation', AUTO_IRRIGATION)
-        self.irr_duration_auto1 = config['General'].getint('irrigation_duration_auto1', IRR_DURATION_AUTO)
-        self.irr_duration_auto2 = config['General'].getint('irrigation_duration_auto2', IRR_DURATION_AUTO)
-        self.irr_duration_man = config['General'].getint('irrigation_duration_man', IRR_DURATION_MAN)
+        self.irr_duration_auto1 = config['General'].getint('irrigation_duration_auto1',
+                                                           IRR_DURATION_AUTO)
+        self.irr_duration_auto2 = config['General'].getint('irrigation_duration_auto2',
+                                                           IRR_DURATION_AUTO)
+        self.irr_duration_man = config['General'].getint('irrigation_duration_man',
+                                                         IRR_DURATION_MAN)
         self.irr_rest = config['General'].getint('irrigation_rest', IRR_REST)
-        self.base_topic_sensors = config['MQTT'].get('base_topic_sensors', 'miflora-mqtt-daemon').lower()
-        self.base_topic_flora = config['MQTT'].get('base_topic_flora', 'flora').lower()
+        self.base_topic_sensors = config['MQTT'].get('base_topic_sensors', 
+                                                     'miflora-mqtt-daemon').lower()
+        self.base_topic_flora = config['MQTT'].get('base_topic_flora', 
+                                                   'flora').lower()
         night_begin = config['General'].get('night_begin', NIGHT_BEGIN)
         night_end = config['General'].get('night_end', NIGHT_END)
         night_begin_hr, night_begin_min = night_begin.split(':')
@@ -86,5 +91,7 @@ class Settings:
         self.night_begin_min = int(night_begin_min)
         self.night_end_hr = int(night_end_hr)
         self.night_end_min = int(night_end_min)
-        self.alerts_defer_time = config['Alerts'].getint('alerts_defer_time',  ALERTS_DEFER_TIME) * 3600
-        self.alerts_repeat_time = config['Alerts'].getint('alerts_repeat_time', ALERTS_REPEAT_TIME) * 3600
+        self.alerts_defer_time = config['Alerts'].getint('alerts_defer_time',
+                                                         ALERTS_DEFER_TIME) * 3600
+        self.alerts_repeat_time = config['Alerts'].getint('alerts_repeat_time',
+                                                          ALERTS_REPEAT_TIME) * 3600
