@@ -1,3 +1,4 @@
+"""Manual and automatic irrigation control"""
 ###############################################################################
 # irrigation.py
 #
@@ -37,6 +38,7 @@ from print_line import print_line
 # Irrigation class - Manual and automatic irrigation control
 ###############################################################################
 class Irrigation:
+    """Manual and automatic irrigation control"""
     def __init__(self):
         """
         The constructor for Irrigation class.
