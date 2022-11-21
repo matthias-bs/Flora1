@@ -84,8 +84,8 @@ from colorama import Fore, Style
 from ppretty import ppretty #for debugging only
 
 # Flora specific modules
-from settings import Settings, DEBUG, VERBOSITY, PROJECT_NAME, PROJECT_VERSION, 
-                    PROJECT_BUILD, PROJECT_URL
+from settings import Settings, DEBUG, VERBOSITY, PROJECT_NAME, PROJECT_VERSION,\
+                     PROJECT_BUILD, PROJECT_URL
 from print_line import print_line
 from gpio import setmode, BCM
 from sensor import Sensor
