@@ -1,3 +1,4 @@
+"""Control water pump"""
 ###############################################################################
 # pump.py
 #
@@ -28,7 +29,7 @@
 ###############################################################################
 
 from time import sleep
-from gpio import *
+from gpio import GPIO, OUT, IN, HIGH, LOW
 
 ###############################################################################
 # Pump class - Pump hardware control/status and software busy flag + timestamp
