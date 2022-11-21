@@ -37,7 +37,7 @@ class Tank:
         low (bool):     fill-level low
         empty (bool):   fill-level empty
         p_low (int):    input pin no. for fill-level empty sensor
-        p_empty (int):  input pin no. for fill-level low sensor 
+        p_empty (int):  input pin no. for fill-level low sensor
     """
     def __init__(self, pin_sensor_low, pin_sensor_empty, name=""):
         """
@@ -86,8 +86,7 @@ class Tank:
             return 0
         if self.low:
             return 1
-        else:
-            return 2
+        return 2
 
     def __str__(self):
         if self.name != "":
