@@ -19,15 +19,15 @@
 # 20210117 Extracted from flora.py
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
 import sys
+from time import localtime, strftime
 import sdnotify
 from unidecode import unidecode
 from colorama import Fore, Back, Style
-from time import localtime, strftime
 
 ###################################################################################
 # Logging function
@@ -41,7 +41,7 @@ sd_notifier = sdnotify.SystemdNotifier()
 def print_line(text, error = False, warning=False, sd_notify=False, console=True):
     """
     Logging function
-    
+
     Parameters:
         text (string):    logging text
         error (bool):     format console output as error
