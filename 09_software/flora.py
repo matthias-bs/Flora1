@@ -76,11 +76,11 @@ import sys
 import argparse
 import os.path
 import json
+from time import sleep
+from configparser import ConfigParser
 import paho.mqtt.client as mqtt
 from colorama import init as colorama_init
 from colorama import Fore, Style
-from configparser import ConfigParser
-from time import sleep
 from ppretty import ppretty #for debugging only
 
 # Flora specific modules
