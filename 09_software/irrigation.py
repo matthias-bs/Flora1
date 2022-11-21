@@ -30,7 +30,7 @@
 import time
 from datetime import datetime
 from settings import *
-from print_line import *
+from print_line import print_line
 
 
 ###############################################################################
