@@ -147,25 +147,25 @@ class Alert:
             self.flag = True
 
             # Immediate alert, w/ / w/o repeat
-            if (self.mode == 1) or (self.mode == 2):
+            if self.mode in (1, 2):
                 if VERBOSITY > 0:
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
                 alert = True
-            elif (self.mode == 3) or (self.mode == 4):
+            elif self.mode in (3, 4):
                 if self.defer_expired():
                     if VERBOSITY > 0:
                         print_line('Alert: {}(M3/4)'.format(self.name), console=True, sd_notify=True)
                     alert = True
 
         if active:
-            if (self.mode == 2) and self.tstamp and self.repeat_expired():
+            if self.mode in (1, 2) and self.tstamp and self.repeat_expired():
                 # Condition active and repeat timer expired
                 # -> send alert and restart timer
                 if VERBOSITY > 0:
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = True
                 self.tstamp = time()
-            if (self.mode == 3) or (self.mode == 4) and self.flag:
+            if self.mode in (3, 4) and self.flag:
                 if self.defer_expired():
                     # Condition active, flag set and deferring timer expired
                     # -> send alert
@@ -216,11 +216,11 @@ class Alert:
             self.flag = True
 
             # Immediate alert, w/ / w/o repeat
-            if (self.mode == 1) or (self.mode == 2):
+            if self.mode in (1, 2):
                 if VERBOSITY > 0:
                     print_line('Alert: {}(M1/2)'.format(self.name), console=True, sd_notify=True)
                 alert = True
-            elif (self.mode == 3) or (self.mode == 4):
+            elif self.mode in (3, 4):
                 if self.defer_expired():
                     if VERBOSITY > 0:
                         print_line('Alert: {}(M3/4)'.format(self.name), console=True, sd_notify=True)
@@ -234,7 +234,7 @@ class Alert:
                     print_line('Alert: {}(M2, repeat)'.format(self.name), console=True, sd_notify=True)
                 alert = True
                 self.tstamp = time()
-            if ((self.mode == 3) or (self.mode == 4)) and self.flag:
+            if self.mode in (3, 4) and self.flag:
                 if self.defer_expired():
                     # Condition active, flag set and deferring timer expired
                     # -> send alert
