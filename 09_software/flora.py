@@ -76,6 +76,7 @@ import sys
 import argparse
 import os.path
 import json
+import ssl
 from time import sleep
 from configparser import ConfigParser
 import paho.mqtt.client as mqtt
