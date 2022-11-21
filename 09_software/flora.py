@@ -459,7 +459,7 @@ if __name__ == '__main__':
             cond_min  = config[sensor].getint('cond_min'),
             cond_max  = config[sensor].getint('cond_max'),
             moist_min = config[sensor].getint('moist_min'),
-            moist_lo  = config[sensor].getint('moist_lo'), 
+            moist_lo  = config[sensor].getint('moist_lo'),
             moist_hi  = config[sensor].getint('moist_hi'),
             moist_max = config[sensor].getint('moist_max'),
             light_min = config[sensor].getint('light_min'),
@@ -529,7 +529,7 @@ if __name__ == '__main__':
                            show_protected=True, show_static=True, show_properties=True, show_address=True),
                    console=True, sd_notify=True)
 
-    if VERBOSITY > 0:  
+    if VERBOSITY > 0:
         print_line("-----------------------------------------")
         print_line("Starting Main Execution Loop.")
         print_line("-----------------------------------------")
