@@ -39,11 +39,11 @@ from print_line import print_line
 ###############################################################################
 class Irrigation:
     """Manual and automatic irrigation control"""
-    def __init__(self):
-        """
-        The constructor for Irrigation class.
-        """
-        pass
+    #def __init__(self):
+    #    """
+    #    The constructor for Irrigation class.
+    #    """
+    #    pass
 
     ###################################################################################################
     # Handle manual irrigation
