@@ -91,7 +91,7 @@ from sensor import Sensor
 from tank import Tank
 from pump import Pump
 from irrigation import Irrigation
-from alert import *
+from alert import Alert
 from report import Report
 from email_report import Email
 
