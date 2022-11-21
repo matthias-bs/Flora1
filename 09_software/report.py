@@ -2,7 +2,7 @@
 # report.py
 #
 # This module provides the Report class
-# 
+#
 # - generates HTML report with various sensor/plant and system data
 #
 # created: 01/2021 updated: 06/2021
@@ -27,7 +27,7 @@ from time import time
 from unidecode import unidecode
 
 ###############################################################################
-# Report class - Generate status report  
+# Report class - Generate status report
 ###############################################################################
 class Report:
     """
@@ -47,7 +47,7 @@ class Report:
     def __init__(self, settings, sensors, tank, pumps):
         """
         The constructor for Report class.
-        
+
         Parameters:
             sensors (Sensor{}):     dictionary of Sensor class
         """
@@ -68,7 +68,7 @@ class Report:
         self.system_settings()
         self.footer()
         self.rep = unidecode(self.rep)
-  
+
 
     def header(self):
         """
@@ -115,7 +115,7 @@ class Report:
             self.rep += '</tr>\n'
             self.rep += '<tr>\n'
 
-            if s.valid == False:
+            if not s.valid:
                 self.rep += '<td bgcolor="grey">-<td>Ist'
                 self.rep += '<td align="center" bgcolor="grey">-'
                 self.rep += '<td align="center" bgcolor="grey">-'
@@ -158,7 +158,7 @@ class Report:
                     col = "white"
                 self.rep += '<td align="center" bgcolor="{:s}">{:3.0f}\n'\
                     .format(col, s.light)
-   
+
             self.rep += '</tr>\n'
         # END: for s in sensor_list:
         self.rep += '</table>\n'
@@ -167,7 +167,7 @@ class Report:
     def system_status(self):
         """
         Add system status (HTML table) to report.
-        
+
         The content is appended to the attribute <rep>.
         """
         self.rep += '<h2>Systemstatus</h2>\n'
@@ -178,7 +178,8 @@ class Report:
         for i in range(2):
             if self.pumps[i].timestamp != 0:
                 last_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp).strftime("%x %X")
-                next_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp + self.settings.irr_rest).strftime("%x %X")
+                next_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp + \
+                                                            self.settings.irr_rest).strftime("%x %X")
         self.rep += '<tr><td>letzte automatische Bew&auml;sserung<td>{:s}<td>{:s}</tr>\n'\
                     .format(last_irrigation[0], last_irrigation[1])
         self.rep += '<tr><td>n&auml;chste Bew&auml;sserung fr&uuml;hestens<td>{:s}<td>{:s}</tr>\n'\
@@ -234,7 +235,7 @@ class Report:
     def footer(self):
         """
         Add HTML footer to report.
-  
+
         The content is appended to the attribute <rep>.
         """
         self.rep += '</body>\n'
@@ -242,4 +243,4 @@ class Report:
 
     def get_content(self):
         """Return report content from attribute <rep>."""
-        return (self.rep)
+        return self.rep
