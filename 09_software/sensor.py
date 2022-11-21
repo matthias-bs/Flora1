@@ -197,7 +197,8 @@ class Sensor:
         Check if data is valid
 
         Returns:
-            bool: Sensor data has been updated initially and the last update occurred without timeout
+            bool: Sensor data has been updated initially and the last update occurred 
+                  without timeout
         """
         if self.tstamp == 0:
             return False
