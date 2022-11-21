@@ -36,7 +36,7 @@ from colorama import Fore, Style
 
 # Systemd Service Notifications
 # https://github.com/bb4242/sdnotify
-"""sd_notifier instance of SystemdNotifier class"""
+# sd_notifier: instance of SystemdNotifier class
 sd_notifier = sdnotify.SystemdNotifier()
 
 def print_line(text, error = False, warning=False, sd_notify=False, console=True):
