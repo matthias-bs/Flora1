@@ -57,10 +57,10 @@ class Sensor:
         ------------------------------------
         temp_min (float):   temperature [°C]
         cond_min (int):     conductivity [µS/cm]
-        moist_lo (int):     moisture (inner limit) [%] 
+        moist_lo (int):     moisture (inner limit) [%]
         moist_min (int):    moisture (outer limit) [%]
         light_min (int):    light [lux]
-               
+
         Upper limits (desired by the plant):
         ------------------------------------
         temp_max (float):   temperature [°C]
@@ -134,14 +134,14 @@ class Sensor:
             temp_max (float):   temperature [°C]
             cond_min (int):     conductivity [µS/cm]
             cond_max (int):     conductivity [µS/cm]
-            moist_lo (int):     moisture (inner limit) [%] 
+            moist_lo (int):     moisture (inner limit) [%]
             moist_hi (int):     moisture (inner limit) [%]
             moist_min (int):    moisture (outer limit) [%]
             moist_max (int):    moisture (outer limit) [%]
             light_min (int):    light [lux]
             light_irr (int):    light [lux]
             light_max (int):    light [lux]
-        """       
+        """
         self.plant = plant
         self.pump  = pump
         self.temp_min = temp_min
@@ -191,15 +191,14 @@ class Sensor:
         self.light_il = self.light > self.light_irr
         self.light_oh = self.light > self.light_max
 
-    @property    
+    @property  
     def valid(self):
         """
         Check if data is valid
 
         Returns:
-            bool: Sensor data has been updated initially and the last update occurred without timeout 
+            bool: Sensor data has been updated initially and the last update occurred without timeout
         """
         if self.tstamp == 0:
             return False
         return (time() - self.tstamp) < self._tout
-
