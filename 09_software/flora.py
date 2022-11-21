@@ -65,7 +65,7 @@
 #          Added MQTT tank message
 # 20210608 Added support of 2nd pump
 #
-# ToDo:
+# To Do:
 # - compare light value against daily average
 # - add humidity/barometric pressure sensor
 #
@@ -347,8 +347,8 @@ def mqtt_on_message(client, userdata, msg):
 
     # Discard data if moisture value suddenly drops to zero
     # FIXME: Is this still useful?
-    if (float(message['moisture']) == 0) and
-        (sensors[sensor].moist > 5):
+    if float(message['moisture']) == 0) and
+        sensors[sensor].moist > 5:
         return
 
     sensors[sensor].update_sensor(
