@@ -23,7 +23,7 @@
 # 20210117 Extracted from flora.py
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
@@ -42,7 +42,7 @@ class Pump:
 
     Attributes:
         p_power (int):          output pin no. for pump driver control
-        p_status (int):         input pin no. for pump driver status 
+        p_status (int):         input pin no. for pump driver status
         tank (Tank):            Tank object
         _drvstatus (bool):      raw value of pump driver status
         busy (bool):            pump is currently busy (has to be set explicitely)
@@ -78,7 +78,7 @@ class Pump:
     @property
     def _drvstatus(self):
         """Get raw value (bool) of status pin."""
-        return (GPIO.input(self.p_status)) 
+        return (GPIO.input(self.p_status))
 
     def control(self, power):
         """
@@ -94,7 +94,7 @@ class Pump:
                  0 otherwise.
         """
 
-        if (self.tank.empty & power == 1):
+        if self.tank.empty & power == 1:
             return 1
         GPIO.output(self.p_power, power)
         return 0
@@ -112,18 +112,18 @@ class Pump:
                  2 if driver-status is not as expected during on-state
         """
         self.status = 0
-        if (self.tank.empty):
+        if self.tank.empty:
             self.status = 1
             return (self.status)
         GPIO.output(self.p_power, GPIO.HIGH)
         sleep(0.5)
         for step in range(on_time):
-            if (self._drvstatus != GPIO.HIGH):
+            if self._drvstatus != GPIO.HIGH:
                 self.status = 2
                 break
-            if (self.tank.empty):
+            if self.tank.empty:
                 self.status = 1
-                break;
+                break
             sleep(1)
 
         GPIO.output(self.p_power, GPIO.LOW)
@@ -133,14 +133,14 @@ class Pump:
     @property
     def status_str(self):
         """Get status of last pump activation as string."""
-        if (self.status == 0):
+        if self.status == 0:
             return ("o.k.")
-        elif (self.status == 1):
-            return ("tank empty")
+        elif self.status == 1:
+            return "tank empty"
         else:
-            return ("error")
+            return "error"
 
     def __str__(self):
         return ("{}Pin# driver control: {:2}, Pin# driver status: {:2}, Status: {:>10}, Busy: {}, Timestamp: {}"
-                .format((self.name + ' ') if (self.name != '') else '', self.p_power, self.p_status, 
+                .format((self.name + ' ') if (self.name != '') else '', self.p_power, self.p_status,
                         self.status_str, self.busy, self.timestamp))
