@@ -163,6 +163,7 @@ class Sensor:
 
     @property
     def timeout(self):
+        """Check sensor data for timeout"""
         return (time() - self.tstamp) > self._tout
 
     def update_sensor(self, temp, cond, moist, light, batt):
