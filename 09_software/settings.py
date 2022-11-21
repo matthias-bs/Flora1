@@ -79,9 +79,9 @@ class Settings:
         self.irr_duration_man = config['General'].getint('irrigation_duration_man',
                                                          IRR_DURATION_MAN)
         self.irr_rest = config['General'].getint('irrigation_rest', IRR_REST)
-        self.base_topic_sensors = config['MQTT'].get('base_topic_sensors', 
+        self.base_topic_sensors = config['MQTT'].get('base_topic_sensors',
                                                      'miflora-mqtt-daemon').lower()
-        self.base_topic_flora = config['MQTT'].get('base_topic_flora', 
+        self.base_topic_flora = config['MQTT'].get('base_topic_flora',
                                                    'flora').lower()
         night_begin = config['General'].get('night_begin', NIGHT_BEGIN)
         night_end = config['General'].get('night_end', NIGHT_END)
