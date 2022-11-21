@@ -30,12 +30,10 @@ from email.message import EmailMessage
 from settings import DEBUG, VERBOSITY
 from print_line import print_line
 
-###############################################################################
-# Email class - Setup email object from config file and send message
-###############################################################################
 class Email:
+    # pylint: disable=too-few-public-methods
     """
-    Handle e-Mails
+    Setup email object from config file and send message
 
     Attributes:
         smtp_server (string):   SMTP server address
