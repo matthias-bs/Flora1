@@ -21,12 +21,12 @@
 # 20210608 Added support of 2nd pump
 #
 # ToDo:
-# - 
+# -
 #
 ###############################################################################
 
 from time import time
-from settings import *
+#from settings import *
 
 ###############################################################################
 # Sensor class - Sensor and plant data and methods
@@ -159,7 +159,7 @@ class Sensor:
 
     @property
     def timeout(self):
-        return ((time() - self.tstamp) > self._tout)
+        return (time() - self.tstamp) > self._tout
 
     def update_sensor(self, temp, cond, moist, light, batt):
         """
@@ -200,7 +200,7 @@ class Sensor:
         Returns:
             bool: Sensor data has been updated initially and the last update occurred without timeout 
         """
-        if (self.tstamp == 0):
-            return (False)
-        return ((time() - self.tstamp) < self._tout) 
+        if self.tstamp == 0:
+            return False
+        return (time() - self.tstamp) < self._tout
 
