@@ -35,7 +35,7 @@
 
 from time import time
 from settings import *
-from print_line import *
+from print_line import print_line
 
 #########################################################################################
 # Alert class - Generate alerts depending on plant/sensor data and filter settings
