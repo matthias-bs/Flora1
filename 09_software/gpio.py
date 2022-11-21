@@ -1,5 +1,5 @@
 ###############################################################################
-# Alert.py
+# gpio.py
 #
 # This module provides a stub as (non-functional!) replacement for RPi.GPIO
 # on other systems than Raspberry Pi.
