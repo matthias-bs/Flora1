@@ -34,7 +34,7 @@
 ###############################################################################
 
 from time import time
-from settings import *
+from settings import DEBUG, VERBOSITY
 from print_line import print_line
 
 #########################################################################################
