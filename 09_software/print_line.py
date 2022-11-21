@@ -48,7 +48,7 @@ def print_line(text, error = False, warning=False, sd_notify=False, console=True
         warning (bool):   format console output as warning
         sd_notify (bool): generate systemd sd_notify protocol output
         console (bool):   generate console output (with formatting depending on flags error/warning)
-    """    
+    """
     timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
     if console:
         if error:
