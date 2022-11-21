@@ -191,7 +191,7 @@ class Sensor:
         self.light_il = self.light > self.light_irr
         self.light_oh = self.light > self.light_max
 
-    @property  
+    @property
     def valid(self):
         """
         Check if data is valid
