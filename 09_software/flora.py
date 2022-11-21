@@ -93,7 +93,7 @@ from pump import Pump
 from irrigation import Irrigation
 from alert import *
 from report import Report
-from email_report import *
+from email_report import Email
 
 
 # Options expected (mandatory!) in each sensor-/plant-data section of the config-file
