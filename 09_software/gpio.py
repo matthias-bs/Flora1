@@ -1,3 +1,4 @@
+"""Provide a stub as (non-functional!) replacement for RPi.GPIO"""
 ###############################################################################
 # gpio.py
 #
