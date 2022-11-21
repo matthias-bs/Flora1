@@ -23,7 +23,7 @@ jobs:
         pip install unidecode
         pip install sdnotify
         pip install paho-mqtt
-        pip install RPi
+        #pip install RPi
         pip install pylint
     - name: Analysing the code with pylint
       run: |
