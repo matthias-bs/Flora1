@@ -114,7 +114,7 @@ class Pump:
         self.status = 0
         if self.tank.empty:
             self.status = 1
-            return (self.status)
+            return self.status
         GPIO.output(self.p_power, GPIO.HIGH)
         sleep(0.5)
         for step in range(on_time):
@@ -127,20 +127,20 @@ class Pump:
             sleep(1)
 
         GPIO.output(self.p_power, GPIO.LOW)
-        
-        return (self.status)
+
+        return self.status
 
     @property
     def status_str(self):
         """Get status of last pump activation as string."""
         if self.status == 0:
-            return ("o.k.")
-        elif self.status == 1:
+            return "o.k."
+        if self.status == 1:
             return "tank empty"
         else:
             return "error"
 
     def __str__(self):
-        return ("{}Pin# driver control: {:2}, Pin# driver status: {:2}, Status: {:>10}, Busy: {}, Timestamp: {}"
+        return "{}Pin# driver control: {:2}, Pin# driver status: {:2}, Status: {:>10}, Busy: {}, Timestamp: {}"
                 .format((self.name + ' ') if (self.name != '') else '', self.p_power, self.p_status,
-                        self.status_str, self.busy, self.timestamp))
+                        self.status_str, self.busy, self.timestamp)
