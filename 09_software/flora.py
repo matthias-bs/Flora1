@@ -87,7 +87,7 @@ from ppretty import ppretty #for debugging only
 from settings import Settings, DEBUG, VERBOSITY, PROJECT_NAME, PROJECT_VERSION,\
                      PROJECT_BUILD, PROJECT_URL, GPIO_TANK_SENS_LOW, GPIO_TANK_SENS_EMPTY,\
                      GPIO_PUMP_POWER, GPIO_PUMP_STATUS, PROCESSING_PERIOD, MESSAGE_TIMEOUT, \
-                     BATT_LOW
+                     BATT_LOW, PUMP_BUSY_MAN,
 from print_line import print_line
 from gpio import GPIO
 from sensor import Sensor
