@@ -86,7 +86,7 @@ from ppretty import ppretty #for debugging only
 # Flora specific modules
 from settings import *
 from print_line import print_line
-from gpio import *
+from gpio import setmode, BCM
 from sensor import Sensor
 from tank import Tank
 from pump import Pump
@@ -335,7 +335,7 @@ def mqtt_on_message(client, userdata, msg):
     Parameters:
         client: client instance for this callback
         userdata: private user data as set in Client() or user_data_set()
-        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain  
+        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
     """
     base_topic, sensor = msg.topic.split('/')
 
@@ -459,7 +459,7 @@ if __name__ == '__main__':
             cond_min  = config[sensor].getint('cond_min'),
             cond_max  = config[sensor].getint('cond_max'),
             moist_min = config[sensor].getint('moist_min'),
-            moist_lo  = config[sensor].getint('moist_lo'),      
+            moist_lo  = config[sensor].getint('moist_lo'), 
             moist_hi  = config[sensor].getint('moist_hi'),
             moist_max = config[sensor].getint('moist_max'),
             light_min = config[sensor].getint('light_min'),
@@ -472,7 +472,7 @@ if __name__ == '__main__':
 
     # Initialize irrigation
     irrigation = Irrigation()
-    
+
     # Init MQTT client
     mqtt_client = mqtt_init(config)
 
@@ -490,7 +490,7 @@ if __name__ == '__main__':
                console=True, sd_notify=True)
 
     for sensor in sensors:
-        while not(sensors[sensor].valid):
+        while not sensors[sensor].valid:
             sleep(1)
         if VERBOSITY > 1:
             print_line(sensor + ' ready!', console=True, sd_notify=True)
@@ -529,7 +529,7 @@ if __name__ == '__main__':
                            show_protected=True, show_static=True, show_properties=True, show_address=True),
                    console=True, sd_notify=True)
 
-    if VERBOSITY > 0:     
+    if VERBOSITY > 0:  
         print_line("-----------------------------------------")
         print_line("Starting Main Execution Loop.")
         print_line("-----------------------------------------")
@@ -584,7 +584,7 @@ if __name__ == '__main__':
 
         if VERBOSITY > 2:
             print_line("Tank:  {}".format(tank), console=True, sd_notify=False)
-            print_line("Pumpe: {}".format(pump), console=True, sd_notify=False)     
+            print_line("Pumpe: {}".format(pump), console=True, sd_notify=False)
 
         if DEBUG:
             print_line("------------------")
