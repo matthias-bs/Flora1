@@ -17,14 +17,14 @@
 # 20210118 Extracted from flora.py
 # 20210608 Added support of 2nd pump
 #
-# ToDo:
-# - 
+# To Do:
+# -
 #
 ###############################################################################
 
-from unidecode import unidecode
 from datetime import datetime
-from time import time, strftime
+from time import time
+from unidecode import unidecode
 
 ###############################################################################
 # Report class - Generate status report  
@@ -32,14 +32,14 @@ from time import time, strftime
 class Report:
     """
     Generate status report
-    
+
     Accesses the following object instances:
     - <settings>
     - <sensors>
     - <pumps>
     - <tank>
     - <alert>
-    
+
     Attributes:
         sensors (Sensor{}):     dictionary of Sensor class
         rep (string):           report contents
@@ -55,11 +55,11 @@ class Report:
         self.sensors = sensors
         self.tank = tank
         self.pumps = pumps
-        
+
         # Find minimum light_irr value of all sensors
         self.min_light_irr = 1000000
-        for s in sensors:
-            self.min_light_irr = min(self.min_light_irr, sensors[s].light_irr)
+        for sensor in sensors:
+            self.min_light_irr = min(self.min_light_irr, sensors[sensor].light_irr)
 
         self.rep = ""
         self.header()
@@ -68,7 +68,7 @@ class Report:
         self.system_settings()
         self.footer()
         self.rep = unidecode(self.rep)
-        
+  
 
     def header(self):
         """
@@ -115,50 +115,50 @@ class Report:
             self.rep += '</tr>\n'
             self.rep += '<tr>\n'
 
-            if (s.valid == False):
+            if s.valid == False:
                 self.rep += '<td bgcolor="grey">-<td>Ist'
                 self.rep += '<td align="center" bgcolor="grey">-'
                 self.rep += '<td align="center" bgcolor="grey">-'
                 self.rep += '<td align="center" bgcolor="grey">-'
                 self.rep += '<td align="center" bgcolor="grey">-'
             else:
-                if (s.batt_ul):
+                if s.batt_ul:
                     col = "red"
                 else:
                     col = "white"
                 self.rep += '<td bgcolor="{:s}">Batt:{:3.0f} %\n'\
                     .format(col, s.batt)
                 self.rep += '<td>Ist\n'
-                if (s.moist_ll or s.moist_hl):
+                if s.moist_ll or s.moist_hl:
                     col = "orange"
-                elif (s.moist_ul or s.moist_oh):
+                elif s.moist_ul or s.moist_oh:
                     col = "red"
                 else:
                     col = "white"
                 self.rep += '<td align="center" bgcolor="{:s}">{:3.0f}\n'\
                     .format(col, s.moist)
 
-                if (s.temp_ul or s.temp_oh):
+                if s.temp_ul or s.temp_oh:
                     col = "red"
                 else:
                     col = "white"
                 self.rep += '<td align="center" bgcolor="{:s}">{:3.0f}\n'\
                     .format(col, s.temp)
 
-                if (s.cond_ul or s.cond_oh):
+                if s.cond_ul or s.cond_oh:
                     col = "red"
                 else:
                     col = "white"
                 self.rep += '<td align="center" bgcolor="{:s}">{:3.0f}\n'\
                     .format(col, s.cond)
 
-                if (s.light_ul or s.light_oh):
+                if s.light_ul or s.light_oh:
                     col = "red"
                 else:
                     col = "white"
                 self.rep += '<td align="center" bgcolor="{:s}">{:3.0f}\n'\
                     .format(col, s.light)
-            
+   
             self.rep += '</tr>\n'
         # END: for s in sensor_list:
         self.rep += '</table>\n'
@@ -176,7 +176,7 @@ class Report:
         last_irrigation = ['-', '-']
         next_irrigation = ['-', '-']
         for i in range(2):
-            if (self.pumps[i].timestamp != 0):
+            if self.pumps[i].timestamp != 0:
                 last_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp).strftime("%x %X")
                 next_irrigation[i] = datetime.fromtimestamp(self.pumps[i].timestamp + self.settings.irr_rest).strftime("%x %X")
         self.rep += '<tr><td>letzte automatische Bew&auml;sserung<td>{:s}<td>{:s}</tr>\n'\
@@ -191,10 +191,10 @@ class Report:
         status = ["i.O.", "i.O."]
         col    = ["white", "white"]
         for i in range(2):
-            if (self.pumps[i].status == 2):
+            if self.pumps[i].status == 2:
                 col[i]    = "red"
                 status[i] = "on: error"
-            elif (self.pumps[i].status == 4):
+            elif self.pumps[i].status == 4:
                 col[i]    = "red"
                 status[i] = "off: error"
 
@@ -234,12 +234,12 @@ class Report:
     def footer(self):
         """
         Add HTML footer to report.
-        
+  
         The content is appended to the attribute <rep>.
         """
         self.rep += '</body>\n'
         self.rep += '</html>\n'
-    
+
     def get_content(self):
         """Return report content from attribute <rep>."""
         return (self.rep)
