@@ -29,7 +29,7 @@
 ###############################################################################
 
 from time import sleep
-from gpio import GPIO, OUT, IN, HIGH, LOW
+from gpio import GPIO
 
 ###############################################################################
 # Pump class - Pump hardware control/status and software busy flag + timestamp
@@ -141,6 +141,7 @@ class Pump:
         return "error"
 
     def __str__(self):
-        return "{}Pin# driver control: {:2}, Pin# driver status: {:2}, Status: {:>10}, Busy: {}, Timestamp: {}"\
+        return "{}Pin# driver control: {:2}, Pin# driver status: {:2}, \
+                Status: {:>10}, Busy: {}, Timestamp: {}"\
                 .format((self.name + ' ') if (self.name != '') else '', self.p_power, self.p_status,
                         self.status_str, self.busy, self.timestamp)
