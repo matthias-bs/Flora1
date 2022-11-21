@@ -27,7 +27,7 @@
 import smtplib
 import ssl
 from email.message import EmailMessage
-from settings import *
+from settings import DEBUG, VERBOSITY
 from print_line import print_line
 
 ###############################################################################
