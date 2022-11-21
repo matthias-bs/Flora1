@@ -29,7 +29,7 @@
 
 import time
 from datetime import datetime
-#from settings import *
+from settings import VERBOSITY, PUMP_BUSY_MAN, PUMP_BUSY_AUTO
 from print_line import print_line
 
 
