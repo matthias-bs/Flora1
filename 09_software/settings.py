@@ -1,4 +1,4 @@
-"""Provide default settings and user defined settings from the configuration file"
+"""Provide default settings and user defined settings from the configuration file"""
 ###############################################################################
 # settings.py
 #
