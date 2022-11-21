@@ -58,7 +58,7 @@ class Irrigation:
         # Check if flag has been set (asynchronously) in 'mqtt_man_irrigation_request'
         # message callback function
         for i in range(2):
-            if (pumps[i].busy == PUMP_BUSY_MAN):
+            if pumps[i].busy == PUMP_BUSY_MAN:
                 print_line('Running pump #{} for {:d} seconds -->'.format(i+1, settings.irr_duration_man),
                            console=True, sd_notify=True)
                 pumps[i].power_on(settings.irr_duration_man)
@@ -101,8 +101,8 @@ class Irrigation:
         nighttime_start = now.replace(hour=settings.night_begin_hr, minute=settings.night_begin_min, second=0, microsecond=0)
         nighttime_end = now.replace(hour=settings.night_end_hr, minute=settings.night_end_min, second=0, microsecond=0)
 
-        if ((now >= nighttime_start) or (now < nighttime_end)):
-            if (VERBOSITY > 1):
+        if (now >= nighttime_start) or (now < nighttime_end):
+            if VERBOSITY > 1:
                 print_line("auto_irrigation: sleep time! Zzzz...")
             return [False, False]
 
@@ -110,18 +110,18 @@ class Irrigation:
         activate = [False, False]
         for p in range(2):
             for sensor in sensors:
-                if (sensors[sensor].pump != p+1):
+                if sensors[sensor].pump != p+1:
                     continue
-                if (sensors[sensor].valid == False):
+                if sensors[sensor].valid == False:
                     # At least one sensor with timeout -> bail out
                     break
-                if (sensors[sensor].light_il):
+                if sensors[sensor].light_il:
                     # At least one light value over irrigation limit -> bail out
                     break
-                if (sensors[sensor].moist_oh):
+                if sensors[sensor].moist_oh:
                     # At least one moisture value over range -> bail out
                     break
-                if (sensors[sensor].moist_ul):
+                if sensors[sensor].moist_ul:
                     # At least one moisture value under range -> ready!
                     activate[p] = True
                     break
@@ -130,13 +130,13 @@ class Irrigation:
         schedule = [False, False]
         for p in range(2):
             if activate[p]:
-                if ((time.time() - pumps[p].timestamp) < settings.irr_rest):
+                if (time.time() - pumps[p].timestamp) < settings.irr_rest:
                     # All sensor values are within range, but time since last irrigation (irr_rest)
                     # has not expired yet -> bailing out
-                    if (VERBOSITY > 1):
+                    if VERBOSITY > 1:
                         print_line("Auto irrigation: pump #{} scheduled.".format(p))
                     schedule[p] = True
-                elif (pumps[p].busy == 0):
+                elif pumps[p].busy == 0:
                     # Pump has not been started manually - ready!
                     duration = settings.irr_duration_auto1 if (p == 0) else settings.irr_duration_auto2
                     print_line("Auto irrigation: running pump #{} for {:d} seconds"
