@@ -1,3 +1,4 @@
+"""Provide default settings and user defined settings from the configuration file"
 ###############################################################################
 # settings.py
 #
@@ -66,6 +67,7 @@ BATT_LOW            = 5
 # Settings class - Global settings from config file, MQTT messages and others
 ###############################################################################
 class Settings:
+    """Global settings from config file"""
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-few-public-methods
     def __init__(self, config):
