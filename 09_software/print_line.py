@@ -53,11 +53,14 @@ def print_line(text, error = False, warning=False, sd_notify=False, console=True
     timestamp = strftime('%Y-%m-%d %H:%M:%S', localtime())
     if console:
         if error:
-            print(Fore.RED + Style.BRIGHT + '[{}] '.format(timestamp) + Style.RESET_ALL + '{}'.format(text) + Style.RESET_ALL, file=sys.stderr)
+            print(Fore.RED + Style.BRIGHT + '[{}] '.format(timestamp) + Style.RESET_ALL +\
+                  '{}'.format(text) + Style.RESET_ALL, file=sys.stderr)
         elif warning:
-            print(Fore.YELLOW + '[{}] '.format(timestamp) + Style.RESET_ALL + '{}'.format(text) + Style.RESET_ALL)
+            print(Fore.YELLOW + '[{}] '.format(timestamp) + Style.RESET_ALL +\
+                  '{}'.format(text) + Style.RESET_ALL)
         else:
-            print(Fore.GREEN + '[{}] '.format(timestamp) + Style.RESET_ALL + '{}'.format(text) + Style.RESET_ALL)
+            print(Fore.GREEN + '[{}] '.format(timestamp) + Style.RESET_ALL +\
+                  '{}'.format(text) + Style.RESET_ALL)
     timestamp_sd = strftime('%b %d %H:%M:%S', localtime())
     if sd_notify:
         sd_notifier.notify('STATUS={} - {}.'.format(timestamp_sd, unidecode(text)))
