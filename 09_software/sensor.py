@@ -1,3 +1,4 @@
+"""Store and check plant sensor values"""
 ###############################################################################
 # sensor.py
 #
@@ -31,6 +32,7 @@ from time import time
 # Sensor class - Sensor and plant data and methods
 ###############################################################################
 class Sensor:
+    # pylint: disable=too-many-instance-attributes
     """
     This is a class for sensor data, plant specific limits and all the rest.
 
