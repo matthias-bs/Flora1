@@ -27,7 +27,7 @@ import sys
 from time import localtime, strftime
 import sdnotify
 from unidecode import unidecode
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 
 ###################################################################################
 # Logging function
