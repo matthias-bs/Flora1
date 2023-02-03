@@ -163,7 +163,7 @@ def mqtt_init(cfg):
 
 
 
-def mqtt_setup_messages(client, mqtt_settings, sensors):
+def mqtt_setup_messages(client, mqtt_settings, mysensors):
     """
     Subscribe to MQTT topics and set up message callbacks
 
@@ -177,7 +177,7 @@ def mqtt_setup_messages(client, mqtt_settings, sensors):
         client.subscribe(mqtt_settings.base_topic_flora + '/' + topic, qos=2)
 
     # Subscribe all MQTT sensor topics, e.g. "miflora-mqtt-daemon/appletree/moisture"
-    for sensor in sensors:
+    for sensor in mysensors:
         print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_sensors + '/' + sensor,
                 console=True, sd_notify=True)
         client.subscribe(mqtt_settings.base_topic_sensors + '/' + sensor)
