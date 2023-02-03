@@ -196,7 +196,7 @@ def mqtt_setup_messages(mqtt_client, settings, sensors):
 #############################################################################################
 # MQTT - Eclipse Paho callbacks - http://www.eclipse.org/paho/clients/python/docs/#callbacks
 #############################################################################################
-def mqtt_on_connect(client, userdata, flags, rc):
+def mqtt_on_connect(_client, _userdata, _flags, rc):
     """
     MQTT client connect initialization callback function
 
@@ -218,7 +218,7 @@ def mqtt_on_connect(client, userdata, flags, rc):
     mqtt_setup_messages(mqtt_client, settings, sensors)
 
 
-def mqtt_man_report_cmd(client, userdata, msg):
+def mqtt_man_report_cmd(client, _userdata, _msg):
     """
     Send report as mail.
 
@@ -236,7 +236,7 @@ def mqtt_man_report_cmd(client, userdata, msg):
     Email(config).send(Report(settings, sensors, tank, pumps).get_content())
 
 
-def mqtt_man_irr_cmd(client, userdata, msg):
+def mqtt_man_irr_cmd(_client, _userdata, msg):
     """
     Run irrigation for <irr_duration> seconds.
 
@@ -261,7 +261,7 @@ def mqtt_man_irr_cmd(client, userdata, msg):
         pumps[idx].busy = PUMP_BUSY_MAN
 
 
-def mqtt_man_irr_duration_ctrl(client, userdata, msg):
+def mqtt_man_irr_duration_ctrl(client, _userdata, msg):
     """
     Set manual irrigation duration (<irr_duration_man>)
 
@@ -284,7 +284,7 @@ def mqtt_man_irr_duration_ctrl(client, userdata, msg):
     client.publish(settings.base_topic_flora + '/man_irr_duration_stat', msg.payload)
 
 
-def mqtt_auto_report_ctrl(client, userdata, msg):
+def mqtt_auto_report_ctrl(client, _userdata, msg):
     """
     Switch auto reporting on/off)
 
@@ -307,7 +307,7 @@ def mqtt_auto_report_ctrl(client, userdata, msg):
     client.publish(settings.base_topic_flora + '/auto_report_stat', msg.payload)
 
 
-def mqtt_auto_irr_ctrl(client, userdata, msg):
+def mqtt_auto_irr_ctrl(client, _userdata, msg):
     """
     Switch auto irrigation on/off
 
@@ -330,7 +330,7 @@ def mqtt_auto_irr_ctrl(client, userdata, msg):
     client.publish(settings.base_topic_flora + '/auto_irr_stat', msg.payload)
 
 
-def mqtt_on_message(client, userdata, msg):
+def mqtt_on_message(_client, _userdata, msg):
     """
     Handle all other MQTT messages, i.e. those with sensor data.
 
