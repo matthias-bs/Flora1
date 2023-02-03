@@ -350,7 +350,6 @@ def mqtt_on_message(_client, _userdata, msg):
         print_line('MQTT message from {}: {}'.format(sensor, message))
 
     # Discard data if moisture value suddenly drops to zero
-    # FIXME: Is this still useful?
     if (float(message['moisture']) == 0) and (sensors[sensor].moist > 5):
         return
 
