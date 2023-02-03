@@ -45,16 +45,16 @@ if USE_GPIO_STUB:
             self.LOW = 0
             self.HIGH = 1
 
-        def setmode(self, mode):
+        def setmode(self, _mode):
             pass
 
-        def setup(self, pin, direction):
+        def setup(self, _pin, _direction):
             pass
 
-        def input(self, pin):
+        def input(self, _pin):
             return False
 
-        def output(self, pin, val):
+        def output(self, _pin, _val):
             pass
 
 # Use stub for RPi.GPIO on other systems than Raspberry Pi
