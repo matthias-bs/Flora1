@@ -587,8 +587,9 @@ if __name__ == '__main__':
                         sensors[sensor].batt))
 
         if VERBOSITY > 2:
-            print_line("Tank:  {}".format(tank), console=True, sd_notify=False)
-            print_line("Pumpe: {}".format(pump), console=True, sd_notify=False)
+            print_line("Tank:    {}".format(tank), console=True, sd_notify=False)
+            print_line("Pumpe 0: {}".format(pumps[0]), console=True, sd_notify=False)
+            print_line("Pumpe 1: {}".format(pumps[1]), console=True, sd_notify=False)
 
         if DEBUG:
             print_line("------------------")
