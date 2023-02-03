@@ -154,7 +154,7 @@ def mqtt_init(config):
         mqtt_client.connect(config['MQTT'].get('hostname', 'localhost'),
                             port=config['MQTT'].getint('port', 1883),
                             keepalive=config['MQTT'].getint('keepalive', 60))
-    except:
+    except: # pylint: disable=bare-except
         print_line('MQTT connection error. Please check your settings in the ' +\
                 'configuration file "config.ini"', error=True, sd_notify=True)
         sys.exit(1)
