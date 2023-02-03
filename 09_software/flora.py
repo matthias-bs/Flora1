@@ -120,12 +120,12 @@ OPTIONS = [
 #############################################################################################
 # MQTT - Eclipse Paho Setup
 #############################################################################################
-def mqtt_init(config):
+def mqtt_init(cfg):
     """
     Init MQTT client and connect to MQTT broker
 
     Parameters:
-        config (ConfigParser): config file parser
+        cfg (ConfigParser): config file parser
     """
 
     # MQTT Connection
@@ -133,27 +133,27 @@ def mqtt_init(config):
     mqtt_client = mqtt.Client()
     mqtt_client.on_connect = mqtt_on_connect
 
-    if config['MQTT'].getboolean('tls', False):
+    if cfg['MQTT'].getboolean('tls', False):
     # According to the docs, setting PROTOCOL_SSLv23 "Selects the highest protocol version
     # that both the client and server support. Despite the name, this option can select
     # 'TLS' protocols as well as 'SSL'" - so this seems like a resonable default
         mqtt_client.tls_set(
-            ca_certs=config['MQTT'].get('tls_ca_cert', None),
-            keyfile=config['MQTT'].get('tls_keyfile', None),
-            certfile=config['MQTT'].get('tls_certfile', None),
+            ca_certs=cfg['MQTT'].get('tls_ca_cert', None),
+            keyfile=cfg['MQTT'].get('tls_keyfile', None),
+            certfile=cfg['MQTT'].get('tls_certfile', None),
             tls_version=ssl.PROTOCOL_SSLv23
         )
 
     # Set 'Last Will and Testament"
     mqtt_client.will_set(settings.base_topic_flora + '/status', 'dead', qos=1, retain=True)
 
-    if config['MQTT'].get('username'):
-        mqtt_client.username_pw_set(config['MQTT'].get('username'),
-                                    config['MQTT'].get('password', None))
+    if cfg['MQTT'].get('username'):
+        mqtt_client.username_pw_set(cfg['MQTT'].get('username'),
+                                    cfg['MQTT'].get('password', None))
     try:
-        mqtt_client.connect(config['MQTT'].get('hostname', 'localhost'),
-                            port=config['MQTT'].getint('port', 1883),
-                            keepalive=config['MQTT'].getint('keepalive', 60))
+        mqtt_client.connect(cfg['MQTT'].get('hostname', 'localhost'),
+                            port=cfg['MQTT'].getint('port', 1883),
+                            keepalive=cfg['MQTT'].getint('keepalive', 60))
     except: # pylint: disable=bare-except
         print_line('MQTT connection error. Please check your settings in the ' +\
                 'configuration file "config.ini"', error=True, sd_notify=True)
