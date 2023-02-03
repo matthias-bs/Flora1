@@ -1,4 +1,7 @@
 # flora1
+
+[![linting: pylint](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml/badge.svg)](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml)
+
 **Raspberry Pi Irrigation System**
 
 ![flora-1_188x300](https://user-images.githubusercontent.com/83612361/120393655-9590ad80-c332-11eb-8bba-2d2cbcf6389f.jpg)
