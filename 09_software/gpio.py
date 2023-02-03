@@ -27,7 +27,7 @@
 try:
     import RPi.GPIO as GPIO
     USE_GPIO_STUB = False
-except:
+except (ImportError, RuntimeError):
     USE_GPIO_STUB = True
     print("Using GPIO stub")
 else:
