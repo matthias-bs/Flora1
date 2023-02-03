@@ -449,7 +449,7 @@ if __name__ == '__main__':
     for sensor in sensors:
         for option in OPTIONS:
             if not config.has_option(sensor, option):
-                print_line('The configuration file "config.ini" has a section "[' + section + ']",',
+                print_line('The configuration file "config.ini" has a section "[' + sensor + ']",',
                         error=True, sd_notify=True)
                 print_line('but the mandatory key "' + option + '" is missing.',
                         error=True, sd_notify=True)
