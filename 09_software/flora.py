@@ -211,8 +211,8 @@ def mqtt_on_connect(_client, _userdata, _flags, rc):
     else:
         print_line('Connection error with result code {} - {}'.format(str(rc),
                    mqtt.connack_string(rc)), error=True)
-        #kill main thread
-        os._exit(1)
+        # kill main thread
+        os._exit(1) # pylint: disable=protected-access
 
     # Set up MQTT message subscription and handlers
     mqtt_setup_messages(mqtt_client, settings, sensors)
