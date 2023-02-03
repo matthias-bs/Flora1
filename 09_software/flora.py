@@ -341,7 +341,7 @@ def mqtt_on_message(client, userdata, msg):
         userdata: private user data as set in Client() or user_data_set()
         msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
     """
-    base_topic, sensor = msg.topic.split('/')
+    _, sensor = msg.topic.split('/')
 
     # Convert JSON ecoded data to dictionary
     message = json.loads(msg.payload.decode('utf-8'))
