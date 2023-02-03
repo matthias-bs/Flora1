@@ -391,7 +391,7 @@ if __name__ == '__main__':
 
     # Load configuration file
     config_dir = parse_args.config_dir
-    config = ConfigParser(delimiters=('=', ), inline_comment_prefixes=('#'))
+    config = ConfigParser(delimiters=('=', ), inline_comment_prefixes=('#', ))
     config.optionxform = str
     config.read([os.path.join(config_dir, 'config.ini.dist'),
                 os.path.join(config_dir, 'config.ini')])
