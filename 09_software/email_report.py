@@ -93,7 +93,7 @@ class Email:
             server.login(self.smtp_login, self.smtp_passwd)
             server.send_message(msg)
 
-        except:
+        except: # pylint: disable=bare-except
             success = False
 
         finally:
