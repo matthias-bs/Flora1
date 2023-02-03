@@ -163,7 +163,7 @@ def mqtt_init(cfg):
 
 
 
-def mqtt_setup_messages(mqtt_client, settings, sensors):
+def mqtt_setup_messages(mqtt_client, mqtt_settings, sensors):
     """
     Subscribe to MQTT topics and set up message callbacks
 
@@ -172,22 +172,22 @@ def mqtt_setup_messages(mqtt_client, settings, sensors):
     """
     # Subscribe to flora control MQTT topics
     for topic in ['man_report_cmd', 'man_irr_cmd', 'man_irr_duration_ctrl', 'auto_report_ctrl', 'auto_irr_ctrl']:
-        print_line('Subscribing to MQTT topic ' + settings.base_topic_flora + '/' + topic,
+        print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_flora + '/' + topic,
                    console=True, sd_notify=True)
-        mqtt_client.subscribe(settings.base_topic_flora + '/' + topic, qos=2)
+        mqtt_client.subscribe(mqtt_settings.base_topic_flora + '/' + topic, qos=2)
 
     # Subscribe all MQTT sensor topics, e.g. "miflora-mqtt-daemon/appletree/moisture"
     for sensor in sensors:
-        print_line('Subscribing to MQTT topic ' + settings.base_topic_sensors + '/' + sensor,
+        print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_sensors + '/' + sensor,
                 console=True, sd_notify=True)
-        mqtt_client.subscribe(settings.base_topic_sensors + '/' + sensor)
+        mqtt_client.subscribe(mqtt_settings.base_topic_sensors + '/' + sensor)
 
     # Set topic specific message handlers
-    mqtt_client.message_callback_add(settings.base_topic_flora + '/man_report_cmd', mqtt_man_report_cmd)
-    mqtt_client.message_callback_add(settings.base_topic_flora + '/man_irr_cmd', mqtt_man_irr_cmd)
-    mqtt_client.message_callback_add(settings.base_topic_flora + '/man_irr_duration_ctrl', mqtt_man_irr_duration_ctrl)
-    mqtt_client.message_callback_add(settings.base_topic_flora + '/auto_report_ctrl', mqtt_auto_report_ctrl)
-    mqtt_client.message_callback_add(settings.base_topic_flora + '/auto_irr_ctrl', mqtt_auto_irr_ctrl)
+    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_report_cmd', mqtt_man_report_cmd)
+    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_cmd', mqtt_man_irr_cmd)
+    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_duration_ctrl', mqtt_man_irr_duration_ctrl)
+    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_report_ctrl', mqtt_auto_report_ctrl)
+    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_irr_ctrl', mqtt_auto_irr_ctrl)
 
     # Message handler for reception of all other subsribed topics
     mqtt_client.on_message = mqtt_on_message
