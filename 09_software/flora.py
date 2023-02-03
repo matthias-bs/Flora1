@@ -341,19 +341,19 @@ def mqtt_on_message(_client, _userdata, msg):
         userdata: private user data as set in Client() or user_data_set()
         msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
     """
-    _, sensor = msg.topic.split('/')
+    _, _sensor = msg.topic.split('/')
 
     # Convert JSON ecoded data to dictionary
     message = json.loads(msg.payload.decode('utf-8'))
 
     if VERBOSITY > 1:
-        print_line('MQTT message from {}: {}'.format(sensor, message))
+        print_line('MQTT message from {}: {}'.format(_sensor, message))
 
     # Discard data if moisture value suddenly drops to zero
-    if (float(message['moisture']) == 0) and (sensors[sensor].moist > 5):
+    if (float(message['moisture']) == 0) and (sensors[_sensor].moist > 5):
         return
 
-    sensors[sensor].update_sensor(
+    sensors[_sensor].update_sensor(
         float(message['temperature']),
         int(message['conductivity']),
         int(message['moisture']),
