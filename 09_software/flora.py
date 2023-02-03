@@ -130,14 +130,14 @@ def mqtt_init(cfg):
 
     # MQTT Connection
     print_line('Connecting to MQTT broker -->')
-    mqtt_client = mqtt.Client()
-    mqtt_client.on_connect = mqtt_on_connect
+    client = mqtt.Client()
+    client.on_connect = mqtt_on_connect
 
     if cfg['MQTT'].getboolean('tls', False):
     # According to the docs, setting PROTOCOL_SSLv23 "Selects the highest protocol version
     # that both the client and server support. Despite the name, this option can select
     # 'TLS' protocols as well as 'SSL'" - so this seems like a resonable default
-        mqtt_client.tls_set(
+        client.tls_set(
             ca_certs=cfg['MQTT'].get('tls_ca_cert', None),
             keyfile=cfg['MQTT'].get('tls_keyfile', None),
             certfile=cfg['MQTT'].get('tls_certfile', None),
@@ -145,52 +145,52 @@ def mqtt_init(cfg):
         )
 
     # Set 'Last Will and Testament"
-    mqtt_client.will_set(settings.base_topic_flora + '/status', 'dead', qos=1, retain=True)
+    client.will_set(settings.base_topic_flora + '/status', 'dead', qos=1, retain=True)
 
     if cfg['MQTT'].get('username'):
-        mqtt_client.username_pw_set(cfg['MQTT'].get('username'),
+        client.username_pw_set(cfg['MQTT'].get('username'),
                                     cfg['MQTT'].get('password', None))
     try:
-        mqtt_client.connect(cfg['MQTT'].get('hostname', 'localhost'),
-                            port=cfg['MQTT'].getint('port', 1883),
-                            keepalive=cfg['MQTT'].getint('keepalive', 60))
+        client.connect(cfg['MQTT'].get('hostname', 'localhost'),
+                       port=cfg['MQTT'].getint('port', 1883),
+                       keepalive=cfg['MQTT'].getint('keepalive', 60))
     except: # pylint: disable=bare-except
         print_line('MQTT connection error. Please check your settings in the ' +\
                 'configuration file "config.ini"', error=True, sd_notify=True)
         sys.exit(1)
 
-    return mqtt_client
+    return client
 
 
 
-def mqtt_setup_messages(mqtt_client, mqtt_settings, sensors):
+def mqtt_setup_messages(client, mqtt_settings, sensors):
     """
     Subscribe to MQTT topics and set up message callbacks
 
     Parameters:
-        mqtt_client (Client): MQTT Client
+        client (Client): MQTT Client
     """
     # Subscribe to flora control MQTT topics
     for topic in ['man_report_cmd', 'man_irr_cmd', 'man_irr_duration_ctrl', 'auto_report_ctrl', 'auto_irr_ctrl']:
         print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_flora + '/' + topic,
                    console=True, sd_notify=True)
-        mqtt_client.subscribe(mqtt_settings.base_topic_flora + '/' + topic, qos=2)
+        client.subscribe(mqtt_settings.base_topic_flora + '/' + topic, qos=2)
 
     # Subscribe all MQTT sensor topics, e.g. "miflora-mqtt-daemon/appletree/moisture"
     for sensor in sensors:
         print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_sensors + '/' + sensor,
                 console=True, sd_notify=True)
-        mqtt_client.subscribe(mqtt_settings.base_topic_sensors + '/' + sensor)
+        client.subscribe(mqtt_settings.base_topic_sensors + '/' + sensor)
 
     # Set topic specific message handlers
-    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_report_cmd', mqtt_man_report_cmd)
-    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_cmd', mqtt_man_irr_cmd)
-    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_duration_ctrl', mqtt_man_irr_duration_ctrl)
-    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_report_ctrl', mqtt_auto_report_ctrl)
-    mqtt_client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_irr_ctrl', mqtt_auto_irr_ctrl)
+    client.message_callback_add(mqtt_settings.base_topic_flora + '/man_report_cmd', mqtt_man_report_cmd)
+    client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_cmd', mqtt_man_irr_cmd)
+    client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_duration_ctrl', mqtt_man_irr_duration_ctrl)
+    client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_report_ctrl', mqtt_auto_report_ctrl)
+    client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_irr_ctrl', mqtt_auto_irr_ctrl)
 
     # Message handler for reception of all other subsribed topics
-    mqtt_client.on_message = mqtt_on_message
+    client.on_message = mqtt_on_message
 
 
 #############################################################################################
