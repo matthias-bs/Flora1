@@ -218,7 +218,7 @@ def mqtt_on_connect(_client, _userdata, _flags, rc):
     mqtt_setup_messages(mqtt_client, settings, sensors)
 
 
-def mqtt_man_report_cmd(client, _userdata, _msg):
+def mqtt_man_report_cmd(_client, _userdata, _msg):
     """
     Send report as mail.
 
