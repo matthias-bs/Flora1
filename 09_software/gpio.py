@@ -25,7 +25,7 @@
 ###############################################################################
 
 try:
-    import RPi.GPIO as GPIO
+    import RPi.GPIO as GPIO # pylint: disable=unused-import
     USE_GPIO_STUB = False
 except (ImportError, RuntimeError):
     USE_GPIO_STUB = True
