@@ -27,6 +27,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20230203 Coding style improvements (with pylint)
 #
 # To Do:
 # -
