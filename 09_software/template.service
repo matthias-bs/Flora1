@@ -1,6 +1,6 @@
 [Unit]
 Description=Flora Plant Irrigation System Client/Daemon
-Documentation=tbd
+Documentation=https://github.com/matthias-bs/Flora1
 After=network.target mosquitto.service
 
 [Service]
