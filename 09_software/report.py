@@ -6,7 +6,7 @@
 #
 # - generates HTML report with various sensor/plant and system data
 #
-# created: 01/2021 updated: 06/2021
+# created: 01/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -17,6 +17,7 @@
 #
 # 20210118 Extracted from flora.py
 # 20210608 Added support of 2nd pump
+# 20230204 Coding style improvements (with pylint)
 #
 # To Do:
 # -
