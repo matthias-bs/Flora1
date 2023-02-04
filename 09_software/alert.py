@@ -17,7 +17,7 @@
 #   - mode = 4: same as mode 3, but alert is repeated after <repeat_time>
 #               if active state still persists
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
