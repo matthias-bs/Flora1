@@ -10,7 +10,7 @@
 # modify config.ini instead!!!
 #
 #
-# created: 01/2021 updated: 10/2022
+# created: 01/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -23,6 +23,7 @@
 # 20210602 Added PROJECT_BUILD
 # 20210608 Added support of 2nd pump
 # 20221010 Fixed initialization of irr_rest
+# 20230204 Coding style improvements (with pylint)
 #
 # To Do:
 # -
