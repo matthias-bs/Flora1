@@ -29,7 +29,7 @@
 #
 # $ via LWT
 #
-# created: 02/2020 updated: 06/2021
+# created: 02/2020
 #
 # This program is Copyright (C) 02/2020 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -64,6 +64,7 @@
 # 20210602 Added MQTT status message and last will
 #          Added MQTT tank message
 # 20210608 Added support of 2nd pump
+# 20230204 Coding style improvements and bugfixes (with pylint)
 #
 # To Do:
 # - compare light value against daily average
