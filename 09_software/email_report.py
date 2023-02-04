@@ -18,6 +18,7 @@
 #
 # 20210117 Extracted from flora.py
 # 20210608 Added base_topic_flora to Email subject
+# 20230204 Coding style improvements (with pylint)
 #
 # To Do:
 # -
