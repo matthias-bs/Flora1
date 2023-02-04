@@ -12,7 +12,7 @@
 # - provides <timestamp> attribute (usage is left to the application)
 # - provides <busy> attribute (usage is left to the application)
 #
-# created: 01/2021 updated: 01/2021
+# created: 01/2021
 #
 # This program is Copyright (C) 01/2021 Matthias Prinke
 # <m.prinke@arcor.de> and covered by GNU's GPL.
@@ -22,6 +22,7 @@
 # History:
 #
 # 20210117 Extracted from flora.py
+# 20230204 Coding style improvements (with pylint)
 #
 # To Do:
 # -
