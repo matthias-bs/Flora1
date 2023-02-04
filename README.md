@@ -2,6 +2,7 @@
 
 [![linting: pylint](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml/badge.svg)](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml)
 [![GitHub release](https://img.shields.io/github/release/matthias-bs/flora1?maxAge=3600)](https://github.com/matthias-bs/flora1/releases)
+[![License: GPLv3](https://img.shields.io/badge/license-GPLv3-green)](https://github.com/matthias-bs/flora1/blob/main/LICENSE)
 
 **Raspberry Pi Irrigation System**
 
