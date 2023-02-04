@@ -1,6 +1,7 @@
 # flora1
 
 [![linting: pylint](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml/badge.svg)](https://github.com/matthias-bs/flora1/actions/workflows/pylint.yml)
+[![GitHub release](https://img.shields.io/github/release/matthias-bs/flora1?maxAge=3600)](https://github.com/matthias-bs/flora1/releases)
 
 **Raspberry Pi Irrigation System**
 
