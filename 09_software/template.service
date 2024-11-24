@@ -7,7 +7,9 @@ After=network.target mosquitto.service
 Type=notify
 User=daemon
 Group=daemon
-WorkingDirectory=/opt/flora/
+# see README.md
+WorkingDirectory=/var/run/flora/
+RuntimeDirectory=/opt/flora
 ExecStart=/usr/bin/python3 /opt/flora/flora.py
 #StandardOutput=null
 StandardOutput=syslog
@@ -15,6 +17,7 @@ SyslogIdentifier=flora
 StandardError=journal
 Environment=PYTHONUNBUFFERED=true
 Restart=always
+RestartSec=15
 
 [Install]
 WantedBy=multi-user.target
