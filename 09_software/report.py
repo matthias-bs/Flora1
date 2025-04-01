@@ -27,7 +27,6 @@
 
 import json
 from datetime import datetime
-from time import time
 
 
 ###############################################################################
@@ -119,7 +118,7 @@ class Report:
         """
         self.data['irrigation'] = []
         self.data['pump'] = []
-        for pump in self.pumps:
+        for i, pump in enumerate(self.pumps):
             if (pump.timestamp != 0):
                 last_irrigation = datetime.fromtimestamp(pump.timestamp).strftime("%x %X")
                 next_irrigation = datetime.fromtimestamp(pump.timestamp + \
