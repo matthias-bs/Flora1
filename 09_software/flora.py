@@ -87,8 +87,6 @@ from settings import Settings, DEBUG, VERBOSITY, PROJECT_NAME, PROJECT_VERSION,\
                      PROJECT_BUILD, PROJECT_URL, GPIO_TANK_SENS_LOW, GPIO_TANK_SENS_EMPTY,\
                      GPIO_PUMP_POWER, GPIO_PUMP_STATUS, PROCESSING_PERIOD, MESSAGE_TIMEOUT,\
                      BATT_LOW, PUMP_BUSY_MAN
-
-from report import Report
 from print_line import print_line, sd_notifier
 from gpio import GPIO
 from sensor import Sensor
@@ -489,7 +487,7 @@ if __name__ == '__main__':
         report = Report(settings, sensors, pumps, tank)
         system = report.gen_report()
         del report
-        mqtt_client.publish(cfg.settings.base_topic_flora + '/system', system, qos = 1, retain=True)
+        mqtt_client.publish(settings.base_topic_flora + '/system', system, qos = 1, retain=True)
 
         # Publish status flags/values
         mqtt_client.publish(settings.base_topic_flora + '/status', "online", qos=1, retain=True)
