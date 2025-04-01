@@ -62,6 +62,8 @@
 # 20210608 Added support of 2nd pump
 # 20230204 Coding style improvements and bugfixes (with pylint)
 # 20250401 Removed auto_report/man_report and alert handling
+# 20250401 Removed email support, added JSON output for MQTT
+#          Added publish_discovery_sensor() for Home Assistant
 #
 # To Do:
 # - compare light value against daily average
@@ -185,6 +187,45 @@ def mqtt_setup_messages(client, mqtt_settings, mysensors):
     # Message handler for reception of all other subsribed topics
     client.on_message = mqtt_on_message
 
+def publish_discovery_sensor(name):
+    """
+    Publish MQTT discovery messages for Home Assistant
+    
+    Parameters:
+        name (string): sensor name (same as data topic)
+    """
+    state_topic = f"{settings.base_topic_flora}/{name}"
+    sensor_name = f"{settings.base_topic_flora}_{name}"
+    
+    if name == "tank":
+        sensors = [
+            {"name": f"{sensor_name}_int", "stat_t": f"{settings.base_topic_flora}/tank", "dev_cla": "enum", "val_tpl": "{{ value }}", "unit_of_meas": ""},
+            {"name": f"{sensor_name}_str", "stat_t": f"{settings.base_topic_flora}/system", "dev_cla": "enum", "val_tpl": "{{ value_json.tank }}", "unit_of_meas": ""}
+        ]
+    else:
+        sensors = [
+            {"name": f"{name}_battery", "stat_t": f"{state_topic}", "dev_cla": "battery", "val_tpl": "{{ value_json.battery | int }}", "unit_of_meas": "%"},
+            {"name": f"{name}_brightness", "stat_t": f"{state_topic}", "dev_cla": "illuminance", "val_tpl": "{{ value_json.light | int }}", "unit_of_meas": "lx"},
+            {"name": f"{name}_moisture", "stat_t": f"{state_topic}", "dev_cla": "moisture", "val_tpl": "{{ value_json.moisture | int }}", "unit_of_meas": "%"},        
+            {"name": f"{name}_temperature", "stat_t": f"{state_topic}", "dev_cla": "temperature", "val_tpl": "{{ value_json.temperature | float }}", "unit_of_meas": "°C"},
+            {"name": f"{name}_conductivity", "stat_t": f"{state_topic}", "dev_cla": "conductivity", "val_tpl": "{{ value_json.conductivity | int }}", "unit_of_meas": "µS/cm"}
+        ]
+
+    for sensor in sensors:
+        discovery_topic = f"homeassistant/sensor/{sensor['name']}/config"
+        discovery_payload = {
+            "name": sensor["name"],
+            "stat_t": sensor["stat_t"],
+            "val_tpl": sensor["val_tpl"],
+            "unit_of_meas": sensor["unit_of_meas"],
+            "dev_cla": sensor["dev_cla"],
+            "uniq_id": sensor["name"],
+            "dev": {
+                "identifiers": ["plant_sensor"],
+                "name": "Flora2",
+            }
+        }
+        mqtt_client.publish(discovery_topic, json.dumps(discovery_payload).encode("utf-8"))
 
 #############################################################################################
 # MQTT - Eclipse Paho callbacks - http://www.eclipse.org/paho/clients/python/docs/#callbacks
@@ -449,6 +490,10 @@ if __name__ == '__main__':
 
     print_line('<-- Initial reception of MQTT sensor data succeeded.',
                console=True, sd_notify=True)
+
+    #for sensor in sensors:
+    #    publish_discovery_sensor(sensor.name)
+    publish_discovery_sensor("tank")
 
     if DEBUG:
         print_line("---------------------")
