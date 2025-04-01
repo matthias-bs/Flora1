@@ -9,21 +9,17 @@
 # - controls water pump for irrigation
 # - monitors water tank - two levels, low and empty
 # - provides control/status via MQTT
-# - sends alerts via SMTP emails
 #
 # MQTT subscriptions:
 #     <base_topic_sensors>/<sensors>{}      (JSON encoded data)
-#     <base_topic>/man_report_cmd           (-)
 #     <base_topic>/man_irr_cmd              (1|2)
 #     <base_topic>/man_irr_duration_ctrl    (<seconds>)
-#     <base_topic>/auto_report_ctrl         (0|1)
 #     <base_topic>/auto_irr_ctrl            (0|1)
 #
 # MQTT publications:
 #     <base_topic>/status                   (online|offline|idle|dead$)
 #     <base_topic>/man_irr_stat             (0|1)
-#     <base_topic>/man_irr_duration_stat    (<seconds>
-#     <base_topic>/auto_report_stat         (0|1)
+#     <base_topic>/man_irr_duration_stat    (<seconds>)
 #     <base_topic>/auto_irr_stat            (0|1)
 #     <base_topic>/tank                     (0|1|2)
 #
@@ -65,6 +61,7 @@
 #          Added MQTT tank message
 # 20210608 Added support of 2nd pump
 # 20230204 Coding style improvements and bugfixes (with pylint)
+# 20250401 Removed auto_report/man_report and alert handling
 #
 # To Do:
 # - compare light value against daily average
@@ -96,10 +93,7 @@ from sensor import Sensor
 from tank import Tank
 from pump import Pump
 from irrigation import Irrigation
-from alert import Alert
 from report import Report
-from email_report import Email
-
 
 # Options expected (mandatory!) in each sensor-/plant-data section of the config-file
 OPTIONS = [
@@ -172,7 +166,7 @@ def mqtt_setup_messages(client, mqtt_settings, mysensors):
         client (Client): MQTT Client
     """
     # Subscribe to flora control MQTT topics
-    for topic in ['man_report_cmd', 'man_irr_cmd', 'man_irr_duration_ctrl', 'auto_report_ctrl', 'auto_irr_ctrl']:
+    for topic in ['man_irr_cmd', 'man_irr_duration_ctrl', 'auto_irr_ctrl']:
         print_line('Subscribing to MQTT topic ' + mqtt_settings.base_topic_flora + '/' + topic,
                    console=True, sd_notify=True)
         client.subscribe(mqtt_settings.base_topic_flora + '/' + topic, qos=2)
@@ -184,10 +178,8 @@ def mqtt_setup_messages(client, mqtt_settings, mysensors):
         client.subscribe(mqtt_settings.base_topic_sensors + '/' + _sensor)
 
     # Set topic specific message handlers
-    client.message_callback_add(mqtt_settings.base_topic_flora + '/man_report_cmd', mqtt_man_report_cmd)
     client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_cmd', mqtt_man_irr_cmd)
     client.message_callback_add(mqtt_settings.base_topic_flora + '/man_irr_duration_ctrl', mqtt_man_irr_duration_ctrl)
-    client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_report_ctrl', mqtt_auto_report_ctrl)
     client.message_callback_add(mqtt_settings.base_topic_flora + '/auto_irr_ctrl', mqtt_auto_irr_ctrl)
 
     # Message handler for reception of all other subsribed topics
@@ -217,24 +209,6 @@ def mqtt_on_connect(_client, _userdata, _flags, rc):
 
     # Set up MQTT message subscription and handlers
     mqtt_setup_messages(mqtt_client, settings, sensors)
-
-
-def mqtt_man_report_cmd(_client, _userdata, _msg):
-    """
-    Send report as mail.
-
-    This is an MQTT message callback function
-    Note: The Email timestamp is not updated!
-
-
-    Parameters:
-        client: client instance for this callback
-        userdata: private user data as set in Client() or user_data_set()
-        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
-    """
-    print_line('MQTT message "man_report_cmd" received.', console=True, sd_notify=True)
-
-    Email(config).send(Report(settings, sensors, tank, pumps).get_content())
 
 
 def mqtt_man_irr_cmd(_client, _userdata, msg):
@@ -283,29 +257,6 @@ def mqtt_man_irr_duration_ctrl(client, _userdata, msg):
     print_line('MQTT message "man_irr_duration_ctrl({})" received'.format(settings.irr_duration_man),
                console=True, sd_notify=True)
     client.publish(settings.base_topic_flora + '/man_irr_duration_stat', msg.payload)
-
-
-def mqtt_auto_report_ctrl(client, _userdata, msg):
-    """
-    Switch auto reporting on/off)
-
-    This is an MQTT message callback function
-
-    In this case, MQTT Dash sends the value as string/byte array.
-    (b'0'/b'1' means integer value 0/1)
-    The response message contains the original payload, which
-    is used by MQTT Dash to set the visual state.
-
-    Parameters:
-        client: client instance for this callback
-        userdata: private user data as set in Client() or user_data_set()
-        msg: an instance of MQTTMessage. This is a class with members topic, payload, qos, retain
-    """
-    settings.auto_report = int(msg.payload)
-
-    print_line('MQTT message "auto_report_ctrl({})" received'.format(settings.auto_report),
-               console=True, sd_notify=True)
-    client.publish(settings.base_topic_flora + '/auto_report_stat', msg.payload)
 
 
 def mqtt_auto_irr_ctrl(client, _userdata, msg):
@@ -407,9 +358,6 @@ if __name__ == '__main__':
     for i in range(2):
         pumps[i] = Pump(GPIO_PUMP_POWER[i], GPIO_PUMP_STATUS[i], tank)
 
-    # General email object
-    email = Email(config)
-
     # Get configuration data from section [Daemon]
     daemon_enabled = config['Daemon'].getboolean('enabled', 'yes')
 
@@ -502,21 +450,6 @@ if __name__ == '__main__':
     print_line('<-- Initial reception of MQTT sensor data succeeded.',
                console=True, sd_notify=True)
 
-    # Init sensor value alerts
-    batt_alert  = Alert(settings, config['Alerts'].getint('w_battery', 2), "Battery")
-    temp_alert  = Alert(settings, config['Alerts'].getint('w_temperature', 2), "Temperature")
-    moist_alert = Alert(settings, config['Alerts'].getint('w_moisture', 2), "Moisture_Warning")
-    moist_info  = Alert(settings, config['Alerts'].getint('i_moisture', 2), "Moisture_Info")
-    cond_alert  = Alert(settings, config['Alerts'].getint('w_conductivity', 2), "Conductivity")
-    light_alert = Alert(settings, config['Alerts'].getint('w_light', 2), "Light")
-
-    # Init system alerts
-    sensor_err_alert = Alert(settings, config['Alerts'].getint('e_sensor', 2), "Sensor")
-    pump1_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump1")
-    pump2_err_alert   = Alert(settings, config['Alerts'].getint('e_pump', 2), "Pump2")
-    tank_low_alert   = Alert(settings, config['Alerts'].getint('e_tank_low', 2), "Tank Low")
-    tank_empty_alert = Alert(settings, config['Alerts'].getint('e_tank_empty', 2), "Tank Empty")
-
     if DEBUG:
         print_line("---------------------")
         print_line("Settings:")
@@ -550,27 +483,8 @@ if __name__ == '__main__':
         if settings.auto_irrigation:
             settings.irr_scheduled = irrigation.auto_irrigation(settings, sensors, pumps)
 
-        alert  = batt_alert.check_sensors(sensors, 'batt_ul')
-        alert |= temp_alert.check_sensors(sensors, 'temp_ul', 'temp_oh')
-        alert |= moist_alert.check_sensors(sensors, 'moist_ul', 'moist_oh')
-        alert |= moist_info.check_sensors(sensors, 'moist_ll', 'moist_hl')
-        alert |= cond_alert.check_sensors(sensors, 'cond_ul', 'cond_oh')
-        alert |= light_alert.check_sensors(sensors, 'light_ul', 'light_oh')
-        alert |= sensor_err_alert.check_sensors(sensors, 'timeout')
-        alert |= pump1_err_alert.check_system(pumps[0].status == 2)
-        alert |= pump2_err_alert.check_system(pumps[1].status == 2)
-        alert |= tank_low_alert.check_system(tank.low)
-        alert |= tank_empty_alert.check_system(tank.empty)
-
-        # Execute automatic sending of mail reports
-        if settings.auto_report:
-            if alert:
-                print_line('Alert triggered.', console=True, sd_notify=True)
-                Email(config).send(Report(settings, sensors, tank, pumps).get_content())
-
         # Publish status flags/values
         mqtt_client.publish(settings.base_topic_flora + '/status', "online", qos=1, retain=True)
-        mqtt_client.publish(settings.base_topic_flora + '/auto_report_stat', str(settings.auto_report), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/auto_irr_stat', payload=str(settings.auto_irrigation), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_duration_stat', payload=str(settings.irr_duration_man), qos=1, retain=True)
         mqtt_client.publish(settings.base_topic_flora + '/man_irr_stat', payload=str(0), qos = 1)
@@ -590,42 +504,6 @@ if __name__ == '__main__':
             print_line("Tank:    {}".format(tank), console=True, sd_notify=False)
             print_line("Pumpe 0: {}".format(pumps[0]), console=True, sd_notify=False)
             print_line("Pumpe 1: {}".format(pumps[1]), console=True, sd_notify=False)
-
-        if DEBUG:
-            print_line("------------------")
-            print_line("Battery Alert:")
-            print_line("------------------")
-            print_line(ppretty(batt_alert, indent='    ', width=40, seq_length=40,
-                               show_protected=True, show_static=True, show_properties=True, show_address=True),
-                       console=True, sd_notify=True)
-        if DEBUG:
-            print_line("------------------")
-            print_line("Temperature Alert:")
-            print_line("------------------")
-            print_line(ppretty(temp_alert, indent='    ', width=40, seq_length=40,
-                               show_protected=True, show_static=True, show_properties=True, show_address=True),
-                       console=True, sd_notify=True)
-        if DEBUG:
-            print_line("------------------")
-            print_line("Moisture Alert:")
-            print_line("------------------")
-            print_line(ppretty(moist_alert, indent='    ', width=40, seq_length=40,
-                               show_protected=True, show_static=True, show_properties=True, show_address=True),
-                       console=True, sd_notify=True)
-        if DEBUG:
-            print_line("------------------")
-            print_line("Conductivity Alert:")
-            print_line("------------------")
-            print_line(ppretty(cond_alert, indent='    ', width=40, seq_length=40,
-                               show_protected=True, show_static=True, show_properties=True, show_address=True),
-                       console=True, sd_notify=True)
-        if DEBUG:
-            print_line("------------------")
-            print_line("Light Alert:")
-            print_line("------------------")
-            print_line(ppretty(light_alert, indent='    ', width=40, seq_length=40,
-                               show_protected=True, show_static=True, show_properties=True, show_address=True),
-                       console=True, sd_notify=True)
 
         if daemon_enabled:
             if VERBOSITY > 1:
