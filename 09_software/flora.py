@@ -198,12 +198,12 @@ def publish_discovery_sensor(name):
     sensor_name = f"{settings.base_topic_flora}_{name}"
     
     if name == "tank":
-        sensors = [
+        adv_sensors = [
             {"name": f"{sensor_name}_int", "stat_t": f"{settings.base_topic_flora}/tank", "dev_cla": "enum", "val_tpl": "{{ value }}", "unit_of_meas": ""},
             {"name": f"{sensor_name}_str", "stat_t": f"{settings.base_topic_flora}/system", "dev_cla": "enum", "val_tpl": "{{ value_json.tank }}", "unit_of_meas": ""}
         ]
     else:
-        sensors = [
+        adv_sensors = [
             {"name": f"{name}_battery", "stat_t": f"{state_topic}", "dev_cla": "battery", "val_tpl": "{{ value_json.battery | int }}", "unit_of_meas": "%"},
             {"name": f"{name}_brightness", "stat_t": f"{state_topic}", "dev_cla": "illuminance", "val_tpl": "{{ value_json.light | int }}", "unit_of_meas": "lx"},
             {"name": f"{name}_moisture", "stat_t": f"{state_topic}", "dev_cla": "moisture", "val_tpl": "{{ value_json.moisture | int }}", "unit_of_meas": "%"},        
@@ -211,15 +211,15 @@ def publish_discovery_sensor(name):
             {"name": f"{name}_conductivity", "stat_t": f"{state_topic}", "dev_cla": "conductivity", "val_tpl": "{{ value_json.conductivity | int }}", "unit_of_meas": "µS/cm"}
         ]
 
-    for sensor in sensors:
-        discovery_topic = f"homeassistant/sensor/{sensor['name']}/config"
+    for adv_sensor in adv_sensors:
+        discovery_topic = f"homeassistant/sensor/{adv_sensor['name']}/config"
         discovery_payload = {
-            "name": sensor["name"],
-            "stat_t": sensor["stat_t"],
-            "val_tpl": sensor["val_tpl"],
-            "unit_of_meas": sensor["unit_of_meas"],
-            "dev_cla": sensor["dev_cla"],
-            "uniq_id": sensor["name"],
+            "name": adv_sensor["name"],
+            "stat_t": adv_sensor["stat_t"],
+            "val_tpl": adv_sensor["val_tpl"],
+            "unit_of_meas": adv_sensor["unit_of_meas"],
+            "dev_cla": adv_sensor["dev_cla"],
+            "uniq_id": adv_sensor["name"],
             "dev": {
                 "identifiers": ["plant_sensor"],
                 "name": "Flora2",
