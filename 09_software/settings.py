@@ -39,8 +39,8 @@ DEBUG               = False
 VERBOSITY           = 1
 
 PROJECT_NAME        = 'flora'
-PROJECT_VERSION     = 'V2.0.1'
-PROJECT_BUILD       = '20221010'
+PROJECT_VERSION     = 'V3.0.0'
+PROJECT_BUILD       = '20250401'
 PROJECT_URL         = 'https://github.com/matthias-bs/Flora1'
 
 GPIO_TANK_SENS_LOW  = 23
