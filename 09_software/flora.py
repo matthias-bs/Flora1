@@ -222,7 +222,7 @@ def publish_discovery_sensor(name):
             "uniq_id": adv_sensor["name"],
             "dev": {
                 "identifiers": ["plant_sensor"],
-                "name": "Flora2",
+                "name": f"{settings.base_topic_flora}",
             }
         }
         mqtt_client.publish(discovery_topic, json.dumps(discovery_payload).encode("utf-8"))
