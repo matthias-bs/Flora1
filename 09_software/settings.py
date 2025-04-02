@@ -24,6 +24,7 @@
 # 20210608 Added support of 2nd pump
 # 20221010 Fixed initialization of irr_rest
 # 20230204 Coding style improvements (with pylint)
+# 20250401 Removed auto_report and alerts settings
 #
 # To Do:
 # -
@@ -38,8 +39,8 @@ DEBUG               = False
 VERBOSITY           = 1
 
 PROJECT_NAME        = 'flora'
-PROJECT_VERSION     = 'V2.0.1'
-PROJECT_BUILD       = '20221010'
+PROJECT_VERSION     = 'V3.0.0'
+PROJECT_BUILD       = '20250401'
 PROJECT_URL         = 'https://github.com/matthias-bs/Flora1'
 
 GPIO_TANK_SENS_LOW  = 23
@@ -55,13 +56,10 @@ PROCESSING_PERIOD   = 300
 MESSAGE_TIMEOUT     = 900
 NIGHT_BEGIN         = "24:00"
 NIGHT_END           = "00:00"
-AUTO_REPORT         = 1
 AUTO_IRRIGATION     = 1
 IRR_DURATION_AUTO   = 120
 IRR_DURATION_MAN    = 60
 IRR_REST            = 7200
-ALERTS_DEFER_TIME   = 4
-ALERTS_REPEAT_TIME  = 24
 BATT_LOW            = 5
 
 ###############################################################################
@@ -73,7 +71,6 @@ class Settings:
     # pylint: disable=too-few-public-methods
     def __init__(self, config):
         self.irr_scheduled = [False, False]
-        self.auto_report = config['General'].getint('auto_report', AUTO_REPORT)
         self.auto_irrigation = config['General'].getint('auto_irrigation', AUTO_IRRIGATION)
         self.irr_duration_auto1 = config['General'].getint('irrigation_duration_auto1',
                                                            IRR_DURATION_AUTO)
@@ -94,7 +91,3 @@ class Settings:
         self.night_begin_min = int(night_begin_min)
         self.night_end_hr = int(night_end_hr)
         self.night_end_min = int(night_end_min)
-        self.alerts_defer_time = config['Alerts'].getint('alerts_defer_time',
-                                                         ALERTS_DEFER_TIME) * 3600
-        self.alerts_repeat_time = config['Alerts'].getint('alerts_repeat_time',
-                                                          ALERTS_REPEAT_TIME) * 3600
