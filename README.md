@@ -40,7 +40,7 @@ After updating from *Raspbian Buster* to Raspberry Pi OS *Debian Bookworm*, the 
 
 #### Workaround
 
-* Split WorkingDirectory and RuntimeDiretory (see [09_software/template.service](https://github.com/matthias-bs/Flora1/blob/2-starting-via-linux-systemd-service-fails/09_software/template.service))
+* Split WorkingDirectory and RuntimeDirectory (see [09_software/template.service](https://github.com/matthias-bs/Flora1/blob/2-starting-via-linux-systemd-service-fails/09_software/template.service))
   * WorkingDirectory=/var/run/flora/
   * RuntimeDirectory=/opt/flora
 * Create `/var/run/flora` at startup (if will not persist if created manually!)
