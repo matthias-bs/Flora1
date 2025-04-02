@@ -20,10 +20,6 @@
 
 ![IoTMQTTPanel_Flora-Control_400x580](https://user-images.githubusercontent.com/83612361/120223811-7adf0b80-c242-11eb-98a7-2d18f1335ca9.png)
 
-## Flora Status Report (Example)
-
-![flora_email](https://user-images.githubusercontent.com/83612361/120225128-f5108f80-c244-11eb-9133-0f7b753c0b68.png)
-
 ## Why is it called _flora1_?
 
 Because _flora2_ is already in the works!
