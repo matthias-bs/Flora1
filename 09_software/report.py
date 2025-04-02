@@ -70,7 +70,7 @@ class Report:
         self.data['timestamp'] = datetime.now().strftime("%x %X")
         
         # Find minimum light_irr value of all sensors
-        for s in self.sensors:
+        for _, s in self.sensors.items():
             self.min_light_irr = min(self.min_light_irr, s.light_irr)
 
         self.sensor_settings()
@@ -82,7 +82,7 @@ class Report:
         """
         Add sensor (and plant) settings / status to report.
         """
-        for s in self.sensors:
+        for _, s in self.sensors.items():
             self.data[s.name] = {}
             self.data[s.name]['settings'] = {}
             self.data[s.name]['settings']['plant'] = s.plant
@@ -105,7 +105,7 @@ class Report:
                 self.data[s.name]['status']['temp_oh'] = s.temp_oh
                 self.data[s.name]['status']['moist_ul'] = s.moist_ul
                 self.data[s.name]['status']['moist_ll'] = s.moist_ll
-                self.data[s.name]['status']['moist_ul'] = s.moist_ul
+                self.data[s.name]['status']['moist_hl'] = s.moist_hl
                 self.data[s.name]['status']['moist_oh'] = s.moist_oh
                 self.data[s.name]['status']['cond_ul'] = s.cond_ul
                 self.data[s.name]['status']['cond_oh'] = s.cond_oh
